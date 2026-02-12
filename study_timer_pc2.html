@@ -429,6 +429,65 @@
         .modal-btn.cancel:hover {
             background: #cbd5e1;
         }
+
+        .backup-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 15px;
+            border: 2px dashed var(--border);
+        }
+
+        .backup-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .backup-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .backup-btn.export {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .backup-btn.export:hover {
+            background: #0284c7;
+        }
+
+        .backup-btn.import {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .backup-btn.import:hover {
+            background: #7c3aed;
+        }
+
+        .backup-info {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        #fileInput {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -487,6 +546,22 @@
                     <h3>날짜별 학습 기록</h3>
                     <div id="dailyLog"></div>
                 </div>
+
+                <div class="backup-section">
+                    <h3>💾 데이터 백업 및 복원</h3>
+                    <div class="backup-buttons">
+                        <button class="backup-btn export" id="exportBtn">
+                            📥 데이터 내보내기
+                        </button>
+                        <button class="backup-btn import" id="importBtn">
+                            📤 데이터 가져오기
+                        </button>
+                    </div>
+                    <div class="backup-info">
+                        데이터를 JSON 파일로 백업하여 안전하게 보관하세요
+                    </div>
+                    <input type="file" id="fileInput" accept=".json">
+                </div>
             </div>
         </div>
     </div>
@@ -535,9 +610,12 @@
             'control-engineering': '제어공학'
         };
 
+        // 고유한 localStorage 키 사용
+        const STORAGE_KEY = 'patentExamStudyTimer_v1';
+
         // 로컬 스토리지에서 데이터 로드
         function loadData() {
-            const data = localStorage.getItem('studyTimerData');
+            const data = localStorage.getItem(STORAGE_KEY);
             if (data) {
                 const parsed = JSON.parse(data);
                 // 기존 데이터 형식 마이그레이션
@@ -563,7 +641,8 @@
 
         // 로컬 스토리지에 데이터 저장
         function saveData(data) {
-            localStorage.setItem('studyTimerData', JSON.stringify(data));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            console.log('데이터 저장 완료:', data);
         }
 
         // 과목 선택
@@ -925,6 +1004,66 @@
                 console.error('수동 입력 저장 중 오류:', error);
                 alert('저장 중 오류가 발생했습니다. 콘솔을 확인해주세요.');
             }
+        });
+
+        // 데이터 백업/복원 기능
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const fileInput = document.getElementById('fileInput');
+
+        // 데이터 내보내기
+        exportBtn.addEventListener('click', () => {
+            const data = loadData();
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const timestamp = new Date().toISOString().split('T')[0];
+            a.download = `study_timer_backup_${timestamp}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('데이터가 다운로드되었습니다!');
+        });
+
+        // 데이터 가져오기
+        importBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importedData = JSON.parse(event.target.result);
+                    
+                    // 데이터 유효성 검사
+                    if (!importedData['patent-law'] || !importedData['control-engineering']) {
+                        throw new Error('잘못된 데이터 형식입니다.');
+                    }
+
+                    if (!confirm('현재 데이터를 가져온 데이터로 덮어쓰시겠습니까?\n기존 데이터는 사라집니다.')) {
+                        fileInput.value = '';
+                        return;
+                    }
+
+                    saveData(importedData);
+                    updateStats();
+                    alert('데이터를 성공적으로 가져왔습니다!');
+                } catch (error) {
+                    console.error('데이터 가져오기 실패:', error);
+                    alert('데이터 가져오기에 실패했습니다. 올바른 백업 파일인지 확인해주세요.');
+                }
+                fileInput.value = '';
+            };
+            reader.readAsText(file);
         });
 
         // 초기화
