@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>변리사 2차 시험 공부 타이머</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -488,6 +489,85 @@
         #fileInput {
             display: none;
         }
+
+        .chart-section {
+            margin-bottom: 30px;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chart-tab {
+            flex: 1;
+            padding: 12px;
+            background: var(--border);
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chart-tab:hover {
+            background: #cbd5e1;
+        }
+
+        .chart-tab.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .chart-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--border);
+        }
+
+        .chart-stat-item {
+            text-align: center;
+        }
+
+        .chart-stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .chart-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .chart-stat-value.patent {
+            color: var(--patent);
+        }
+
+        .chart-stat-value.control {
+            color: var(--control);
+        }
     </style>
 </head>
 <body>
@@ -539,6 +619,29 @@
                         <h3>제어공학 총 공부시간</h3>
                         <div class="time" id="totalControl">0시간 0분</div>
                         <button class="reset-btn" onclick="resetSubject('control-engineering')">초기화</button>
+                    </div>
+                </div>
+
+                <!-- 그래프 섹션 -->
+                <div class="chart-section">
+                    <div class="chart-tabs">
+                        <button class="chart-tab active" data-period="week">주간 통계</button>
+                        <button class="chart-tab" data-period="month">월간 통계</button>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">📈 과목별 일일 공부시간</div>
+                        <canvas id="studyChart"></canvas>
+                        <div class="chart-stats">
+                            <div class="chart-stat-item">
+                                <div class="chart-stat-label">특허법 평균</div>
+                                <div class="chart-stat-value patent" id="avgPatent">0분</div>
+                            </div>
+                            <div class="chart-stat-item">
+                                <div class="chart-stat-label">제어공학 평균</div>
+                                <div class="chart-stat-value control" id="avgControl">0분</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -766,6 +869,11 @@
             
             // 날짜별 로그
             updateDailyLog(data);
+            
+            // 그래프 업데이트
+            if (studyChart) {
+                updateChart(currentChartPeriod);
+            }
         }
 
         // 날짜별 로그 업데이트
@@ -1066,7 +1174,184 @@
             reader.readAsText(file);
         });
 
+        // 그래프 관련 변수
+        let studyChart = null;
+        let currentChartPeriod = 'week';
+
+        // 그래프 초기화
+        function initChart() {
+            const ctx = document.getElementById('studyChart').getContext('2d');
+            studyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: '특허법',
+                            data: [],
+                            backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                            borderColor: 'rgba(99, 102, 241, 1)',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        },
+                        {
+                            label: '제어공학',
+                            data: [],
+                            backgroundColor: 'rgba(236, 72, 153, 0.7)',
+                            borderColor: 'rgba(236, 72, 153, 1)',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: 'Noto Sans KR',
+                                    size: 12,
+                                    weight: '600'
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const minutes = Math.round(context.parsed.y);
+                                    const hours = Math.floor(minutes / 60);
+                                    const mins = minutes % 60;
+                                    return `${context.dataset.label}: ${hours}시간 ${mins}분`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '분';
+                                },
+                                font: {
+                                    family: 'Noto Sans KR'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Noto Sans KR',
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 그래프 데이터 업데이트
+        function updateChart(period) {
+            const data = loadData();
+            const dates = getDateRange(period);
+            const labels = [];
+            const patentData = [];
+            const controlData = [];
+
+            dates.forEach(date => {
+                // 라벨 생성
+                const dateObj = new Date(date);
+                if (period === 'week') {
+                    const weekday = ['일', '월', '화', '수', '목', '금', '토'][dateObj.getDay()];
+                    labels.push(`${dateObj.getMonth() + 1}/${dateObj.getDate()}(${weekday})`);
+                } else {
+                    labels.push(`${dateObj.getMonth() + 1}/${dateObj.getDate()}`);
+                }
+
+                // 데이터 수집 (분 단위로 변환)
+                let patentMinutes = 0;
+                let controlMinutes = 0;
+
+                if (data['patent-law'].daily[date]) {
+                    const sessions = data['patent-law'].daily[date];
+                    const totalMs = sessions.reduce((sum, session) => sum + session.duration, 0);
+                    patentMinutes = Math.round(totalMs / 60000);
+                }
+
+                if (data['control-engineering'].daily[date]) {
+                    const sessions = data['control-engineering'].daily[date];
+                    const totalMs = sessions.reduce((sum, session) => sum + session.duration, 0);
+                    controlMinutes = Math.round(totalMs / 60000);
+                }
+
+                patentData.push(patentMinutes);
+                controlData.push(controlMinutes);
+            });
+
+            // 평균 계산
+            const patentAvg = patentData.reduce((a, b) => a + b, 0) / dates.length;
+            const controlAvg = controlData.reduce((a, b) => a + b, 0) / dates.length;
+
+            document.getElementById('avgPatent').textContent = formatMinutes(Math.round(patentAvg));
+            document.getElementById('avgControl').textContent = formatMinutes(Math.round(controlAvg));
+
+            // 그래프 업데이트
+            studyChart.data.labels = labels;
+            studyChart.data.datasets[0].data = patentData;
+            studyChart.data.datasets[1].data = controlData;
+            studyChart.update();
+        }
+
+        // 날짜 범위 생성
+        function getDateRange(period) {
+            const dates = [];
+            const today = new Date();
+            const days = period === 'week' ? 7 : 30;
+
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+
+            return dates;
+        }
+
+        // 분을 "X시간 Y분" 형식으로 변환
+        function formatMinutes(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            if (hours === 0) {
+                return `${mins}분`;
+            }
+            return `${hours}시간 ${mins}분`;
+        }
+
+        // 그래프 탭 전환
+        document.querySelectorAll('.chart-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentChartPeriod = tab.dataset.period;
+                updateChart(currentChartPeriod);
+            });
+        });
+
         // 초기화
+        initChart();
         updateStats();
         updateSessionInfo();
     </script>
