@@ -1349,8 +1349,38 @@
             });
 
             // 평균 계산
-            const patentAvg = patentData.reduce((a, b) => a + b, 0) / dates.length;
-            const controlAvg = controlData.reduce((a, b) => a + b, 0) / dates.length;
+            let patentAvg, controlAvg;
+            
+            if (period === 'week') {
+                // 주간: 일별 평균
+                patentAvg = patentData.reduce((a, b) => a + b, 0) / dates.length;
+                controlAvg = controlData.reduce((a, b) => a + b, 0) / dates.length;
+                
+                document.querySelector('#avgPatent').previousElementSibling.textContent = '특허법 평균 (일별)';
+                document.querySelector('#avgControl').previousElementSibling.textContent = '제어공학 평균 (일별)';
+            } else {
+                // 월간: 주별 평균 (30일을 주 단위로 나눔)
+                const weeksCount = Math.ceil(dates.length / 7);
+                let patentWeeklyTotal = 0;
+                let controlWeeklyTotal = 0;
+                
+                for (let i = 0; i < weeksCount; i++) {
+                    const weekStart = i * 7;
+                    const weekEnd = Math.min((i + 1) * 7, dates.length);
+                    
+                    const patentWeekSum = patentData.slice(weekStart, weekEnd).reduce((a, b) => a + b, 0);
+                    const controlWeekSum = controlData.slice(weekStart, weekEnd).reduce((a, b) => a + b, 0);
+                    
+                    patentWeeklyTotal += patentWeekSum;
+                    controlWeeklyTotal += controlWeekSum;
+                }
+                
+                patentAvg = patentWeeklyTotal / weeksCount;
+                controlAvg = controlWeeklyTotal / weeksCount;
+                
+                document.querySelector('#avgPatent').previousElementSibling.textContent = '특허법 평균 (주별)';
+                document.querySelector('#avgControl').previousElementSibling.textContent = '제어공학 평균 (주별)';
+            }
 
             document.getElementById('avgPatent').textContent = formatMinutes(Math.round(patentAvg));
             document.getElementById('avgControl').textContent = formatMinutes(Math.round(controlAvg));
