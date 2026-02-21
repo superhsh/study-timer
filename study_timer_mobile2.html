@@ -575,6 +575,357 @@
             color: var(--control);
         }
 
+        /* 메모 관련 스타일 */
+        .session-memo {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            margin-top: 1px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+            touch-action: manipulation;
+        }
+
+        .session-memo:active {
+            background: #e2e8f0;
+        }
+
+        .session-memo .memo-icon {
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .session-memo .memo-text {
+            color: var(--text-primary);
+            font-weight: 400;
+            word-break: break-word;
+        }
+
+        .session-memo .memo-placeholder {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .memo-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .memo-modal-content h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .memo-modal-content .memo-session-info {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .memo-textarea {
+            width: 100%;
+            min-height: 90px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            resize: vertical;
+            transition: border-color 0.3s;
+            line-height: 1.6;
+        }
+
+        .memo-textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .memo-textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        /* ===== 복습 일정 스타일 ===== */
+        .review-section {
+            margin-bottom: 15px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .review-header h3 {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .review-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+        }
+
+        .review-tab {
+            padding: 9px 14px;
+            background: var(--border);
+            border: none;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .review-tab:active {
+            transform: scale(0.95);
+        }
+
+        .review-tab.active {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .review-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 10px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 4px;
+            line-height: 1;
+        }
+
+        .review-tab.active .review-badge {
+            background: white;
+            color: #f59e0b;
+        }
+
+        .review-list {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .review-date-group {
+            margin-bottom: 10px;
+        }
+
+        .review-date-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding: 5px 10px;
+            background: white;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .review-date-label.today {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .review-date-label.overdue {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .review-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid var(--border);
+        }
+
+        .review-item.patent-law {
+            border-left-color: var(--patent);
+        }
+
+        .review-item.control-engineering {
+            border-left-color: var(--control);
+        }
+
+        .review-item.done {
+            opacity: 0.55;
+            background: #f8fafc;
+        }
+
+        .review-item.done .review-memo {
+            text-decoration: line-through;
+        }
+
+        .review-checkbox {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-top: 1px;
+            background: white;
+            touch-action: manipulation;
+        }
+
+        .review-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .review-checkbox.checked::after {
+            content: '✓';
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .review-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .review-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+
+        .review-subject-badge {
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .review-subject-badge.patent-law {
+            background: var(--patent);
+        }
+
+        .review-subject-badge.control-engineering {
+            background: var(--control);
+        }
+
+        .review-interval {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .review-study-date {
+            font-size: 0.72rem;
+            color: #94a3b8;
+        }
+
+        .review-memo {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .review-empty {
+            text-align: center;
+            padding: 30px 15px;
+            color: var(--text-secondary);
+        }
+
+        .review-empty .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .review-empty p {
+            font-size: 0.9rem;
+        }
+
+        .review-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding: 10px 14px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .review-progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .review-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #34d399);
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        .review-progress-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .review-delete-btn {
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+
         /* 모바일 최적화 */
         @media (max-width: 360px) {
             .timer-time {
@@ -668,6 +1019,24 @@
             </div>
         </div>
 
+        <!-- 복습 일정 카드 -->
+        <div class="card">
+            <div class="review-section">
+                <div class="review-header">
+                    <h3>🔄 복습 일정</h3>
+                </div>
+
+                <div class="review-tabs">
+                    <button class="review-tab active" data-review-tab="today">오늘의 복습 <span class="review-badge" id="todayReviewCount" style="display:none;">0</span></button>
+                    <button class="review-tab" data-review-tab="upcoming">다가오는 복습</button>
+                    <button class="review-tab" data-review-tab="all">전체</button>
+                </div>
+
+                <div id="reviewProgressArea"></div>
+                <div class="review-list" id="reviewList"></div>
+            </div>
+        </div>
+
         <!-- 날짜별 통계 카드 -->
         <div class="card">
             <div class="daily-stats">
@@ -700,31 +1069,48 @@
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
             <div class="modal-header">📝 공부시간 수동 입력</div>
-            <form id="manualEntryForm">
+            <div id="manualEntryForm">
                 <div class="form-group">
                     <label for="manualSubject">과목</label>
-                    <select id="manualSubject" required>
+                    <select id="manualSubject">
                         <option value="patent-law">특허법</option>
                         <option value="control-engineering">제어공학</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="manualDate">날짜</label>
-                    <input type="date" id="manualDate" required>
+                    <input type="date" id="manualDate">
                 </div>
                 <div class="form-group">
                     <label for="manualStartTime">시작 시간</label>
-                    <input type="time" id="manualStartTime" required>
+                    <input type="time" id="manualStartTime">
                 </div>
                 <div class="form-group">
                     <label for="manualEndTime">종료 시간</label>
-                    <input type="time" id="manualEndTime" required>
+                    <input type="time" id="manualEndTime">
+                </div>
+                <div class="form-group">
+                    <label for="manualMemo">학습 내용 (선택)</label>
+                    <textarea id="manualMemo" class="memo-textarea" placeholder="예: 특허법 제29조 신규성 정리..." rows="2" style="min-height:60px;"></textarea>
                 </div>
                 <div class="modal-buttons">
                     <button type="button" class="modal-btn cancel" id="modalCancelBtn">취소</button>
-                    <button type="submit" class="modal-btn submit">저장</button>
+                    <button type="button" class="modal-btn submit" id="manualSaveBtn">저장</button>
                 </div>
-            </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메모 입력/수정 모달 -->
+    <div class="modal-overlay" id="memoModalOverlay">
+        <div class="memo-modal-content">
+            <h3>📝 학습 내용 기록</h3>
+            <div class="memo-session-info" id="memoSessionInfo"></div>
+            <textarea id="memoTextarea" class="memo-textarea" placeholder="어떤 내용을 공부했나요?"></textarea>
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn cancel" id="memoSkipBtn">건너뛰기</button>
+                <button type="button" class="modal-btn submit" id="memoSaveBtn">저장</button>
+            </div>
         </div>
     </div>
 
@@ -752,12 +1138,16 @@
                 Object.keys(parsed).forEach(subject => {
                     Object.keys(parsed[subject].daily).forEach(date => {
                         if (typeof parsed[subject].daily[date] === 'number') {
-                            // 기존 형식을 새 형식으로 변환
                             parsed[subject].daily[date] = [{
                                 start: new Date(date + 'T00:00:00').getTime(),
                                 end: new Date(date + 'T00:00:00').getTime() + parsed[subject].daily[date],
-                                duration: parsed[subject].daily[date]
+                                duration: parsed[subject].daily[date],
+                                memo: ''
                             }];
+                        } else if (Array.isArray(parsed[subject].daily[date])) {
+                            parsed[subject].daily[date].forEach(session => {
+                                if (session.memo === undefined) session.memo = '';
+                            });
                         }
                     });
                 });
@@ -813,10 +1203,8 @@
             isRunning = false;
             clearInterval(timerInterval);
             
-            // 데이터 저장
-            saveSession();
+            const savedInfo = saveSession();
             
-            // 타이머 초기화
             elapsedTime = 0;
             document.getElementById('timerDisplay').textContent = '00:00:00';
             
@@ -826,6 +1214,10 @@
             
             updateSessionInfo();
             updateStats();
+
+            if (savedInfo) {
+                showMemoModal(savedInfo.subject, savedInfo.date, savedInfo.sessionIndex, savedInfo.startTimeStr, savedInfo.endTimeStr);
+            }
         });
 
         // 타이머 업데이트
@@ -856,27 +1248,38 @@
 
         // 세션 저장
         function saveSession() {
-            if (elapsedTime < 1000) return; // 1초 미만은 저장하지 않음
+            if (elapsedTime < 1000) return null;
             
             const data = loadData();
             const now = Date.now();
             const sessionStart = now - elapsedTime;
             const today = new Date(now).toISOString().split('T')[0];
             
-            // 총 시간 업데이트
             data[currentSubject].total += elapsedTime;
             
-            // 날짜별 시간 업데이트 (세션 단위로 저장)
             if (!data[currentSubject].daily[today]) {
                 data[currentSubject].daily[today] = [];
             }
             data[currentSubject].daily[today].push({
                 start: sessionStart,
                 end: now,
-                duration: elapsedTime
+                duration: elapsedTime,
+                memo: ''
             });
             
+            const sessionIndex = data[currentSubject].daily[today].length - 1;
             saveData(data);
+
+            const startTimeStr = new Date(sessionStart).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+            const endTimeStr = new Date(now).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+            return {
+                subject: currentSubject,
+                date: today,
+                sessionIndex: sessionIndex,
+                startTimeStr: startTimeStr,
+                endTimeStr: endTimeStr
+            };
         }
 
         // 세션 정보 업데이트
@@ -885,6 +1288,384 @@
             const statusText = isRunning ? '⏱️ 측정 중...' : '대기 중';
             document.getElementById('sessionInfo').textContent = `${subjectName} | ${statusText}`;
         }
+
+        // ===== 메모 모달 관련 =====
+        const memoModalOverlay = document.getElementById('memoModalOverlay');
+        const memoTextarea = document.getElementById('memoTextarea');
+        const memoSaveBtn = document.getElementById('memoSaveBtn');
+        const memoSkipBtn = document.getElementById('memoSkipBtn');
+        let pendingMemo = null;
+
+        function showMemoModal(subject, date, sessionIndex, startStr, endStr) {
+            pendingMemo = { subject, date, sessionIndex };
+            document.getElementById('memoSessionInfo').textContent = 
+                `${subjectNames[subject]} | ${startStr} ~ ${endStr}`;
+            memoTextarea.value = '';
+            memoModalOverlay.classList.add('active');
+            setTimeout(() => memoTextarea.focus(), 150);
+        }
+
+        memoSaveBtn.addEventListener('click', () => {
+            if (pendingMemo) {
+                const memo = memoTextarea.value.trim();
+                if (memo) {
+                    saveMemoToSession(pendingMemo.subject, pendingMemo.date, pendingMemo.sessionIndex, memo);
+                }
+            }
+            closeMemoModal();
+        });
+
+        memoSkipBtn.addEventListener('click', () => {
+            closeMemoModal();
+        });
+
+        memoModalOverlay.addEventListener('click', (e) => {
+            if (e.target === memoModalOverlay) closeMemoModal();
+        });
+
+        function closeMemoModal() {
+            memoModalOverlay.classList.remove('active');
+            memoTextarea.value = '';
+            pendingMemo = null;
+        }
+
+        function saveMemoToSession(subject, date, sessionIndex, memo) {
+            const data = loadData();
+            if (data[subject] && data[subject].daily[date] && data[subject].daily[date][sessionIndex] !== undefined) {
+                data[subject].daily[date][sessionIndex].memo = memo;
+                saveData(data);
+                const session = data[subject].daily[date][sessionIndex];
+                createOrUpdateReview(subject, date, session.start, memo);
+                updateStats();
+            }
+        }
+
+        function editMemo(subject, date, sessionIndex) {
+            const data = loadData();
+            const session = data[subject]?.daily[date]?.[sessionIndex];
+            if (!session) return;
+
+            const startStr = new Date(session.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+            const endStr = new Date(session.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+            pendingMemo = { subject, date, sessionIndex };
+            document.getElementById('memoSessionInfo').textContent = 
+                `${subjectNames[subject]} | ${startStr} ~ ${endStr}`;
+            memoTextarea.value = session.memo || '';
+            memoModalOverlay.classList.add('active');
+            setTimeout(() => memoTextarea.focus(), 150);
+        }
+
+        // ===== 복습 일정 시스템 =====
+        const REVIEW_KEY = 'patentExamStudyTimer_reviews_v1';
+        const REVIEW_INTERVALS = [1, 4, 7, 14, 30];
+        const INTERVAL_LABELS = { 1: '1일 후', 4: '4일 후', 7: '7일 후', 14: '2주 후', 30: '1달 후' };
+        let currentReviewTab = 'today';
+
+        function loadReviews() {
+            const data = localStorage.getItem(REVIEW_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveReviews(reviews) {
+            localStorage.setItem(REVIEW_KEY, JSON.stringify(reviews));
+        }
+
+        function getReviewId(subject, sessionStart) {
+            return `${subject}_${sessionStart}`;
+        }
+
+        function addDays(dateStr, days) {
+            const d = new Date(dateStr + 'T00:00:00');
+            d.setDate(d.getDate() + days);
+            return d.toISOString().split('T')[0];
+        }
+
+        function getTodayStr() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function createOrUpdateReview(subject, studyDate, sessionStart, memo) {
+            if (!memo || !memo.trim()) {
+                removeReview(subject, sessionStart);
+                return;
+            }
+
+            const reviews = loadReviews();
+            const id = getReviewId(subject, sessionStart);
+            const existingIdx = reviews.findIndex(r => r.id === id);
+
+            const schedule = REVIEW_INTERVALS.map(interval => ({
+                date: addDays(studyDate, interval),
+                interval: interval,
+                done: false
+            }));
+
+            if (existingIdx >= 0) {
+                const old = reviews[existingIdx];
+                schedule.forEach(s => {
+                    const oldItem = old.schedule.find(os => os.interval === s.interval);
+                    if (oldItem) s.done = oldItem.done;
+                });
+                reviews[existingIdx] = { id, subject, memo: memo.trim(), studyDate, sessionStart, schedule };
+            } else {
+                reviews.push({ id, subject, memo: memo.trim(), studyDate, sessionStart, schedule });
+            }
+
+            saveReviews(reviews);
+            updateReviewUI();
+        }
+
+        function removeReview(subject, sessionStart) {
+            const reviews = loadReviews();
+            const id = getReviewId(subject, sessionStart);
+            const filtered = reviews.filter(r => r.id !== id);
+            saveReviews(filtered);
+            updateReviewUI();
+        }
+
+        function toggleReviewDone(reviewId, intervalIdx) {
+            const reviews = loadReviews();
+            const review = reviews.find(r => r.id === reviewId);
+            if (review && review.schedule[intervalIdx]) {
+                review.schedule[intervalIdx].done = !review.schedule[intervalIdx].done;
+                saveReviews(reviews);
+                updateReviewUI();
+            }
+        }
+
+        function deleteReview(reviewId) {
+            if (!confirm('이 학습 내용의 복습 일정을 삭제하시겠습니까?')) return;
+            const reviews = loadReviews().filter(r => r.id !== reviewId);
+            saveReviews(reviews);
+            updateReviewUI();
+        }
+
+        function formatDateKR(dateStr) {
+            const d = new Date(dateStr + 'T00:00:00');
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            const weekday = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+            return `${month}월 ${day}일 (${weekday})`;
+        }
+
+        function updateReviewUI() {
+            const reviews = loadReviews();
+            const today = getTodayStr();
+            const reviewList = document.getElementById('reviewList');
+            const progressArea = document.getElementById('reviewProgressArea');
+
+            let todayTotal = 0, todayDone = 0;
+            reviews.forEach(r => {
+                r.schedule.forEach(s => {
+                    if (s.date === today) { todayTotal++; if (s.done) todayDone++; }
+                });
+            });
+            const badge = document.getElementById('todayReviewCount');
+            const pending = todayTotal - todayDone;
+            if (pending > 0) {
+                badge.textContent = pending;
+                badge.style.display = 'inline-flex';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            if (currentReviewTab === 'today') {
+                renderTodayReviews(reviews, today, reviewList, progressArea);
+            } else if (currentReviewTab === 'upcoming') {
+                renderUpcomingReviews(reviews, today, reviewList, progressArea);
+            } else {
+                renderAllReviews(reviews, today, reviewList, progressArea);
+            }
+        }
+
+        function renderTodayReviews(reviews, today, container, progressArea) {
+            let items = [];
+            reviews.forEach(r => {
+                r.schedule.forEach((s, idx) => {
+                    if (s.date <= today) {
+                        items.push({ review: r, scheduleItem: s, intervalIdx: idx });
+                    }
+                });
+            });
+
+            items.sort((a, b) => {
+                if (a.scheduleItem.done !== b.scheduleItem.done) return a.scheduleItem.done ? 1 : -1;
+                return a.scheduleItem.date < b.scheduleItem.date ? 1 : -1;
+            });
+
+            const total = items.length;
+            const done = items.filter(i => i.scheduleItem.done).length;
+
+            if (total === 0) {
+                progressArea.innerHTML = '';
+                container.innerHTML = `
+                    <div class="review-empty">
+                        <div class="empty-icon">🎉</div>
+                        <p>오늘 복습할 항목이 없습니다!</p>
+                        <p style="font-size:0.8rem; margin-top:6px; color:#94a3b8;">메모를 남기면 자동으로 복습 일정이 생성됩니다</p>
+                    </div>`;
+                return;
+            }
+
+            progressArea.innerHTML = `
+                <div class="review-progress">
+                    <div class="review-progress-bar">
+                        <div class="review-progress-fill" style="width: ${Math.round(done/total*100)}%"></div>
+                    </div>
+                    <span class="review-progress-text">${done}/${total} 완료</span>
+                </div>`;
+
+            let html = '';
+            let currentGroup = '';
+            items.forEach(({ review, scheduleItem, intervalIdx }) => {
+                const isOverdue = scheduleItem.date < today && !scheduleItem.done;
+                const groupLabel = scheduleItem.date === today ? '오늘' : (isOverdue ? `${formatDateKR(scheduleItem.date)} (밀림)` : formatDateKR(scheduleItem.date));
+                
+                if (groupLabel !== currentGroup) {
+                    currentGroup = groupLabel;
+                    const labelClass = scheduleItem.date === today ? 'today' : (isOverdue ? 'overdue' : '');
+                    html += `<div class="review-date-group"><div class="review-date-label ${labelClass}">${groupLabel}</div></div>`;
+                }
+                html += renderReviewItem(review, scheduleItem, intervalIdx);
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderUpcomingReviews(reviews, today, container, progressArea) {
+            progressArea.innerHTML = '';
+            let items = [];
+            const maxDate = addDays(today, 30);
+            reviews.forEach(r => {
+                r.schedule.forEach((s, idx) => {
+                    if (s.date > today && s.date <= maxDate && !s.done) {
+                        items.push({ review: r, scheduleItem: s, intervalIdx: idx });
+                    }
+                });
+            });
+
+            items.sort((a, b) => a.scheduleItem.date.localeCompare(b.scheduleItem.date));
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="review-empty">
+                        <div class="empty-icon">📅</div>
+                        <p>다가오는 복습 일정이 없습니다</p>
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            let currentDate = '';
+            items.forEach(({ review, scheduleItem, intervalIdx }) => {
+                const dateLabel = formatDateKR(scheduleItem.date);
+                if (dateLabel !== currentDate) {
+                    currentDate = dateLabel;
+                    html += `<div class="review-date-group"><div class="review-date-label">${dateLabel}</div></div>`;
+                }
+                html += renderReviewItem(review, scheduleItem, intervalIdx);
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderAllReviews(reviews, today, container, progressArea) {
+            progressArea.innerHTML = '';
+
+            if (reviews.length === 0) {
+                container.innerHTML = `
+                    <div class="review-empty">
+                        <div class="empty-icon">📚</div>
+                        <p>등록된 복습 일정이 없습니다</p>
+                        <p style="font-size:0.8rem; margin-top:6px; color:#94a3b8;">메모를 남기면 자동으로 복습 일정이 생성됩니다</p>
+                    </div>`;
+                return;
+            }
+
+            const sorted = [...reviews].sort((a, b) => b.studyDate.localeCompare(a.studyDate));
+
+            let html = '';
+            sorted.forEach(review => {
+                const subjectClass = review.subject;
+                const subjectLabel = subjectNames[review.subject] || review.subject;
+                const total = review.schedule.length;
+                const done = review.schedule.filter(s => s.done).length;
+                const pct = Math.round(done / total * 100);
+
+                html += `<div style="background:white; border-radius:10px; padding:14px; margin-bottom:10px; border-left:4px solid ${review.subject === 'patent-law' ? 'var(--patent)' : 'var(--control)'};">`;
+                html += `<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">`;
+                html += `<div style="flex:1;">`;
+                html += `<div style="display:flex; align-items:center; gap:6px; margin-bottom:5px; flex-wrap:wrap;">`;
+                html += `<span class="review-subject-badge ${subjectClass}">${subjectLabel}</span>`;
+                html += `<span style="font-size:0.72rem; color:#94a3b8;">학습일: ${formatDateKR(review.studyDate)}</span>`;
+                html += `</div>`;
+                html += `<div style="font-size:0.88rem; color:var(--text-primary); line-height:1.5;">${review.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                html += `</div>`;
+                html += `<button class="review-delete-btn" onclick="deleteReview('${review.id}')" title="삭제">🗑</button>`;
+                html += `</div>`;
+
+                html += `<div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">`;
+                html += `<div style="flex:1; height:5px; background:#e2e8f0; border-radius:3px; overflow:hidden;">`;
+                html += `<div style="width:${pct}%; height:100%; background:var(--success); border-radius:3px;"></div>`;
+                html += `</div>`;
+                html += `<span style="font-size:0.75rem; font-weight:600; color:var(--text-secondary);">${done}/${total}</span>`;
+                html += `</div>`;
+
+                html += `<div style="display:flex; gap:5px; flex-wrap:wrap;">`;
+                review.schedule.forEach((s, idx) => {
+                    const isDone = s.done;
+                    const isPast = s.date <= today;
+                    const isToday = s.date === today;
+                    let bgColor = '#f1f5f9', textColor = 'var(--text-secondary)';
+                    if (isDone) { bgColor = '#d1fae5'; textColor = '#065f46'; }
+                    else if (isToday) { bgColor = '#fef3c7'; textColor = '#92400e'; }
+                    else if (isPast) { bgColor = '#fee2e2'; textColor = '#991b1b'; }
+
+                    html += `<div onclick="toggleReviewDone('${review.id}',${idx})" 
+                        style="padding:4px 8px; border-radius:5px; font-size:0.72rem; font-weight:600; cursor:pointer; 
+                        background:${bgColor}; color:${textColor}; user-select:none;">
+                        ${isDone ? '✓ ' : ''}${INTERVAL_LABELS[s.interval]}
+                    </div>`;
+                });
+                html += `</div>`;
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderReviewItem(review, scheduleItem, intervalIdx) {
+            const subjectClass = review.subject;
+            const subjectLabel = subjectNames[review.subject] || review.subject;
+            const doneClass = scheduleItem.done ? 'done' : '';
+            const checkedClass = scheduleItem.done ? 'checked' : '';
+
+            return `
+                <div class="review-item ${subjectClass} ${doneClass}">
+                    <div class="review-checkbox ${checkedClass}" onclick="toggleReviewDone('${review.id}', ${intervalIdx})"></div>
+                    <div class="review-content">
+                        <div class="review-meta">
+                            <span class="review-subject-badge ${subjectClass}">${subjectLabel}</span>
+                            <span class="review-interval">${INTERVAL_LABELS[scheduleItem.interval]}</span>
+                            <span class="review-study-date">학습일: ${formatDateKR(review.studyDate)}</span>
+                        </div>
+                        <div class="review-memo">${review.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+                    </div>
+                    <button class="review-delete-btn" onclick="deleteReview('${review.id}')" title="삭제">🗑</button>
+                </div>
+            `;
+        }
+
+        document.querySelectorAll('.review-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.review-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentReviewTab = tab.dataset.reviewTab;
+                updateReviewUI();
+            });
+        });
+        // ===== 복습 일정 시스템 끝 =====
 
         // 통계 업데이트
         function updateStats() {
@@ -901,6 +1682,9 @@
             if (studyChart) {
                 updateChart(currentChartPeriod);
             }
+
+            // 복습 UI 업데이트
+            updateReviewUI();
         }
 
         // 날짜별 로그 업데이트
@@ -942,11 +1726,19 @@
                         const startTime = new Date(session.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const endTime = new Date(session.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const duration = formatTimeToHM(session.duration);
+                        const memo = session.memo || '';
+                        const memoDisplay = memo 
+                            ? `<span class="memo-text">${memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`
+                            : `<span class="memo-placeholder">+ 학습 내용 추가</span>`;
                         
                         html += `
                             <div class="subject-time" style="padding-left: 8px;">
                                 <span class="subject-name" style="font-size: 0.85rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
                                 <span class="time-value" style="font-size: 0.85rem;">${duration}</span>
+                            </div>
+                            <div class="session-memo" onclick="editMemo('patent-law','${date}',${idx})">
+                                <span class="memo-icon">📋</span>
+                                ${memoDisplay}
                             </div>
                         `;
                         patentTotal += session.duration;
@@ -971,11 +1763,19 @@
                         const startTime = new Date(session.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const endTime = new Date(session.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const duration = formatTimeToHM(session.duration);
+                        const memo = session.memo || '';
+                        const memoDisplay = memo 
+                            ? `<span class="memo-text">${memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`
+                            : `<span class="memo-placeholder">+ 학습 내용 추가</span>`;
                         
                         html += `
                             <div class="subject-time" style="padding-left: 8px;">
                                 <span class="subject-name" style="font-size: 0.85rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
                                 <span class="time-value" style="font-size: 0.85rem;">${duration}</span>
+                            </div>
+                            <div class="session-memo" onclick="editMemo('control-engineering','${date}',${idx})">
+                                <span class="memo-icon">📋</span>
+                                ${memoDisplay}
                             </div>
                         `;
                         controlTotal += session.duration;
@@ -1024,6 +1824,14 @@
         const modalCancelBtn = document.getElementById('modalCancelBtn');
         const manualEntryForm = document.getElementById('manualEntryForm');
 
+        function resetManualForm() {
+            document.getElementById('manualSubject').value = 'patent-law';
+            document.getElementById('manualDate').value = '';
+            document.getElementById('manualStartTime').value = '';
+            document.getElementById('manualEndTime').value = '';
+            document.getElementById('manualMemo').value = '';
+        }
+
         // 모달 열기
         manualEntryBtn.addEventListener('click', () => {
             const today = new Date().toISOString().split('T')[0];
@@ -1035,54 +1843,44 @@
         // 모달 닫기
         modalCancelBtn.addEventListener('click', () => {
             modalOverlay.classList.remove('active');
-            manualEntryForm.reset();
+            resetManualForm();
         });
 
         // 모달 오버레이 클릭 시 닫기
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) {
                 modalOverlay.classList.remove('active');
-                manualEntryForm.reset();
+                resetManualForm();
             }
         });
 
-        // 수동 입력 폼 제출
-        manualEntryForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            console.log('수동 입력 폼 제출 시작');
+        // 수동 입력 저장 버튼 클릭
+        document.getElementById('manualSaveBtn').addEventListener('click', () => {
+            console.log('수동 입력 저장 버튼 클릭');
 
             const subject = document.getElementById('manualSubject').value;
             const date = document.getElementById('manualDate').value;
-            const startTime = document.getElementById('manualStartTime').value;
-            const endTime = document.getElementById('manualEndTime').value;
+            const mStartTime = document.getElementById('manualStartTime').value;
+            const mEndTime = document.getElementById('manualEndTime').value;
 
-            console.log('입력값:', { subject, date, startTime, endTime });
+            console.log('입력값:', { subject, date, mStartTime, mEndTime });
 
             // 입력값 확인
-            if (!subject || !date || !startTime || !endTime) {
-                alert('모든 항목을 입력해주세요.');
+            if (!subject || !date || !mStartTime || !mEndTime) {
+                alert('과목, 날짜, 시작 시간, 종료 시간을 모두 입력해주세요.');
                 return;
             }
 
             try {
-                // 날짜를 YYYY-MM-DD 형식으로 분리
                 const [year, month, day] = date.split('-').map(Number);
-                const [startHour, startMin] = startTime.split(':').map(Number);
-                const [endHour, endMin] = endTime.split(':').map(Number);
+                const [startHour, startMin] = mStartTime.split(':').map(Number);
+                const [endHour, endMin] = mEndTime.split(':').map(Number);
                 
                 console.log('파싱된 값:', { year, month, day, startHour, startMin, endHour, endMin });
                 
-                // Date 객체 생성 (월은 0부터 시작하므로 -1)
                 const startDateTime = new Date(year, month - 1, day, startHour, startMin, 0, 0);
                 const endDateTime = new Date(year, month - 1, day, endHour, endMin, 0, 0);
 
-                console.log('생성된 Date 객체:', { 
-                    startDateTime: startDateTime.toString(), 
-                    endDateTime: endDateTime.toString() 
-                });
-
-                // 유효성 검사
                 if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
                     alert('올바른 날짜와 시간을 입력해주세요.');
                     return;
@@ -1094,16 +1892,10 @@
                 }
 
                 const duration = endDateTime.getTime() - startDateTime.getTime();
-                console.log('계산된 duration (ms):', duration);
 
-                // 데이터 저장
                 const data = loadData();
-                console.log('현재 데이터:', data);
-                
-                // 총 시간 업데이트
                 data[subject].total += duration;
                 
-                // 날짜별 시간 업데이트
                 if (!data[subject].daily[date]) {
                     data[subject].daily[date] = [];
                 }
@@ -1111,33 +1903,30 @@
                 const session = {
                     start: startDateTime.getTime(),
                     end: endDateTime.getTime(),
-                    duration: duration
+                    duration: duration,
+                    memo: document.getElementById('manualMemo').value.trim()
                 };
                 
-                console.log('추가할 세션:', session);
                 data[subject].daily[date].push(session);
-
-                // 날짜별 세션을 시작 시간 순으로 정렬
                 data[subject].daily[date].sort((a, b) => a.start - b.start);
 
-                console.log('저장될 데이터:', data);
                 saveData(data);
-                
-                console.log('통계 업데이트 시작');
-                updateStats();
-                
-                console.log('통계 업데이트 완료');
 
-                // 모달 닫기 및 폼 리셋
+                if (session.memo) {
+                    createOrUpdateReview(subject, date, session.start, session.memo);
+                }
+                
+                updateStats();
+
                 modalOverlay.classList.remove('active');
-                manualEntryForm.reset();
+                resetManualForm();
 
                 const timeStr = formatTimeToHM(duration);
                 alert(`공부시간이 저장되었습니다!\n${subjectNames[subject]}: ${timeStr}`);
                 
             } catch (error) {
                 console.error('수동 입력 저장 중 오류:', error);
-                alert('저장 중 오류가 발생했습니다. 콘솔을 확인해주세요.');
+                alert('저장 중 오류가 발생했습니다:\n' + error.message);
             }
         });
 
@@ -1149,7 +1938,9 @@
         // 데이터 내보내기
         exportBtn.addEventListener('click', () => {
             const data = loadData();
-            const jsonString = JSON.stringify(data, null, 2);
+            const reviews = loadReviews();
+            const exportData = { ...data, _reviews: reviews };
+            const jsonString = JSON.stringify(exportData, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             
@@ -1189,7 +1980,10 @@
                         return;
                     }
 
+                    const reviews = importedData._reviews || [];
+                    delete importedData._reviews;
                     saveData(importedData);
+                    saveReviews(reviews);
                     updateStats();
                     alert('데이터를 성공적으로 가져왔습니다!');
                 } catch (error) {
