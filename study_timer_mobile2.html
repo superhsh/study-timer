@@ -936,6 +936,90 @@
                 font-size: 1.5rem;
             }
         }
+
+        /* ===== 세션 수정 스타일 ===== */
+        .session-row {
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+        }
+
+        .session-row .subject-time {
+            flex: 1;
+            border-bottom: none;
+        }
+
+        .session-edit-btn {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+
+        .session-edit-btn:active {
+            background: #e0f2fe;
+            color: var(--secondary);
+        }
+
+        .edit-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .edit-modal-content h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .edit-modal-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .edit-modal-buttons .modal-btn {
+            flex: 1;
+            padding: 14px 10px;
+        }
+
+        .modal-btn.delete {
+            background: var(--danger);
+            color: white;
+            flex: 0.7;
+        }
+
+        .modal-btn.delete:active {
+            background: #dc2626;
+            transform: scale(0.95);
+        }
+
+        .edit-subject-display {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .edit-subject-display.patent-law { background: var(--patent); }
+        .edit-subject-display.control-engineering { background: var(--control); }
     </style>
 </head>
 <body>
@@ -1110,6 +1194,35 @@
             <div class="modal-buttons">
                 <button type="button" class="modal-btn cancel" id="memoSkipBtn">건너뛰기</button>
                 <button type="button" class="modal-btn submit" id="memoSaveBtn">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 세션 수정 모달 -->
+    <div class="modal-overlay" id="editSessionOverlay">
+        <div class="edit-modal-content">
+            <h3>✏️ 공부 기록 수정</h3>
+            <div class="edit-subject-display" id="editSubjectDisplay"></div>
+            <div class="form-group">
+                <label for="editDate">날짜</label>
+                <input type="date" id="editDate">
+            </div>
+            <div class="form-group">
+                <label for="editStartTime">시작 시간</label>
+                <input type="time" id="editStartTime">
+            </div>
+            <div class="form-group">
+                <label for="editEndTime">종료 시간</label>
+                <input type="time" id="editEndTime">
+            </div>
+            <div class="form-group">
+                <label for="editMemo">학습 내용</label>
+                <textarea id="editMemo" class="memo-textarea" placeholder="학습 내용을 입력하세요..." style="min-height:60px;"></textarea>
+            </div>
+            <div class="edit-modal-buttons">
+                <button type="button" class="modal-btn delete" id="editDeleteBtn">삭제</button>
+                <button type="button" class="modal-btn cancel" id="editCancelBtn">취소</button>
+                <button type="button" class="modal-btn submit" id="editSaveBtn">저장</button>
             </div>
         </div>
     </div>
@@ -1667,6 +1780,135 @@
         });
         // ===== 복습 일정 시스템 끝 =====
 
+        // ===== 세션 수정/삭제 시스템 =====
+        const editSessionOverlay = document.getElementById('editSessionOverlay');
+        let editingSession = null;
+
+        function openEditSession(subject, date, index) {
+            const data = loadData();
+            const session = data[subject]?.daily[date]?.[index];
+            if (!session) return;
+
+            editingSession = { subject, date, index, originalStart: session.start };
+
+            const display = document.getElementById('editSubjectDisplay');
+            display.textContent = subjectNames[subject];
+            display.className = 'edit-subject-display ' + subject;
+
+            document.getElementById('editDate').value = date;
+
+            const startD = new Date(session.start);
+            const endD = new Date(session.end);
+            document.getElementById('editStartTime').value = 
+                String(startD.getHours()).padStart(2,'0') + ':' + String(startD.getMinutes()).padStart(2,'0');
+            document.getElementById('editEndTime').value = 
+                String(endD.getHours()).padStart(2,'0') + ':' + String(endD.getMinutes()).padStart(2,'0');
+
+            document.getElementById('editMemo').value = session.memo || '';
+            editSessionOverlay.classList.add('active');
+        }
+
+        document.getElementById('editSaveBtn').addEventListener('click', () => {
+            if (!editingSession) return;
+
+            const newDate = document.getElementById('editDate').value;
+            const sTime = document.getElementById('editStartTime').value;
+            const eTime = document.getElementById('editEndTime').value;
+            const newMemo = document.getElementById('editMemo').value.trim();
+
+            if (!newDate || !sTime || !eTime) {
+                alert('날짜, 시작 시간, 종료 시간을 모두 입력해주세요.');
+                return;
+            }
+
+            const [year, month, day] = newDate.split('-').map(Number);
+            const [sh, sm] = sTime.split(':').map(Number);
+            const [eh, em] = eTime.split(':').map(Number);
+
+            const newStart = new Date(year, month - 1, day, sh, sm, 0, 0);
+            const newEnd = new Date(year, month - 1, day, eh, em, 0, 0);
+
+            if (isNaN(newStart.getTime()) || isNaN(newEnd.getTime())) {
+                alert('올바른 날짜와 시간을 입력해주세요.');
+                return;
+            }
+            if (newEnd <= newStart) {
+                alert('종료 시간은 시작 시간보다 늦어야 합니다.');
+                return;
+            }
+
+            const { subject, date: oldDate, index, originalStart } = editingSession;
+            const data = loadData();
+            const oldSession = data[subject]?.daily[oldDate]?.[index];
+            if (!oldSession) { alert('세션을 찾을 수 없습니다.'); return; }
+
+            const oldDuration = oldSession.duration;
+            const newDuration = newEnd.getTime() - newStart.getTime();
+
+            data[subject].daily[oldDate].splice(index, 1);
+            data[subject].total -= oldDuration;
+            if (data[subject].daily[oldDate].length === 0) {
+                delete data[subject].daily[oldDate];
+            }
+
+            if (!data[subject].daily[newDate]) {
+                data[subject].daily[newDate] = [];
+            }
+            data[subject].daily[newDate].push({
+                start: newStart.getTime(),
+                end: newEnd.getTime(),
+                duration: newDuration,
+                memo: newMemo
+            });
+            data[subject].daily[newDate].sort((a, b) => a.start - b.start);
+            data[subject].total += newDuration;
+
+            saveData(data);
+
+            removeReview(subject, originalStart);
+            if (newMemo) {
+                createOrUpdateReview(subject, newDate, newStart.getTime(), newMemo);
+            }
+
+            closeEditSession();
+            updateStats();
+            alert('공부 기록이 수정되었습니다.');
+        });
+
+        document.getElementById('editDeleteBtn').addEventListener('click', () => {
+            if (!editingSession) return;
+            if (!confirm('이 공부 기록을 삭제하시겠습니까?\n삭제하면 복구할 수 없습니다.')) return;
+
+            const { subject, date, index, originalStart } = editingSession;
+            const data = loadData();
+            const session = data[subject]?.daily[date]?.[index];
+            if (!session) return;
+
+            data[subject].total -= session.duration;
+            data[subject].daily[date].splice(index, 1);
+            if (data[subject].daily[date].length === 0) {
+                delete data[subject].daily[date];
+            }
+
+            saveData(data);
+            removeReview(subject, originalStart);
+
+            closeEditSession();
+            updateStats();
+            alert('공부 기록이 삭제되었습니다.');
+        });
+
+        document.getElementById('editCancelBtn').addEventListener('click', closeEditSession);
+        editSessionOverlay.addEventListener('click', (e) => {
+            if (e.target === editSessionOverlay) closeEditSession();
+        });
+
+        function closeEditSession() {
+            editSessionOverlay.classList.remove('active');
+            editingSession = null;
+        }
+        // ===== 세션 수정/삭제 시스템 끝 =====
+
         // 통계 업데이트
         function updateStats() {
             const data = loadData();
@@ -1732,9 +1974,12 @@
                             : `<span class="memo-placeholder">+ 학습 내용 추가</span>`;
                         
                         html += `
-                            <div class="subject-time" style="padding-left: 8px;">
-                                <span class="subject-name" style="font-size: 0.85rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
-                                <span class="time-value" style="font-size: 0.85rem;">${duration}</span>
+                            <div class="session-row">
+                                <div class="subject-time" style="flex:1;">
+                                    <span class="subject-name" style="font-size: 0.85rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
+                                    <span class="time-value" style="font-size: 0.85rem;">${duration}</span>
+                                </div>
+                                <button class="session-edit-btn" onclick="openEditSession('patent-law','${date}',${idx})" title="수정">✏️</button>
                             </div>
                             <div class="session-memo" onclick="editMemo('patent-law','${date}',${idx})">
                                 <span class="memo-icon">📋</span>
@@ -1769,9 +2014,12 @@
                             : `<span class="memo-placeholder">+ 학습 내용 추가</span>`;
                         
                         html += `
-                            <div class="subject-time" style="padding-left: 8px;">
-                                <span class="subject-name" style="font-size: 0.85rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
-                                <span class="time-value" style="font-size: 0.85rem;">${duration}</span>
+                            <div class="session-row">
+                                <div class="subject-time" style="flex:1;">
+                                    <span class="subject-name" style="font-size: 0.85rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
+                                    <span class="time-value" style="font-size: 0.85rem;">${duration}</span>
+                                </div>
+                                <button class="session-edit-btn" onclick="openEditSession('control-engineering','${date}',${idx})" title="수정">✏️</button>
                             </div>
                             <div class="session-memo" onclick="editMemo('control-engineering','${date}',${idx})">
                                 <span class="memo-icon">📋</span>
