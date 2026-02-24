@@ -1080,23 +1080,24 @@
             <!-- 그래프 섹션 -->
             <div class="chart-section">
                 <div class="chart-tabs">
-                    <button class="chart-tab active" data-period="week">주간 통계</button>
-                    <button class="chart-tab" data-period="month">월간 통계</button>
+                    <button class="chart-tab active" data-period="daily">일간 통계</button>
+                    <button class="chart-tab" data-period="weekly">주간 통계</button>
+                    <button class="chart-tab" data-period="monthly">월간 통계</button>
                 </div>
                 
                 <div class="chart-container">
-                    <div class="chart-title">📈 과목별 일일 공부시간</div>
+                    <div class="chart-title" id="chartTitle">📈 시간대별 평균 공부시간</div>
                     <div class="chart-wrapper">
                         <canvas id="studyChart"></canvas>
                     </div>
-                    <div class="chart-stats">
+                    <div class="chart-stats" id="chartStatsArea">
                         <div class="chart-stat-item">
-                            <div class="chart-stat-label">특허법 평균</div>
-                            <div class="chart-stat-value patent" id="avgPatent">0분</div>
+                            <div class="chart-stat-label" id="statLabel1">특허법 평균</div>
+                            <div class="chart-stat-value patent" id="statValue1">0분</div>
                         </div>
                         <div class="chart-stat-item">
-                            <div class="chart-stat-label">제어공학 평균</div>
-                            <div class="chart-stat-value control" id="avgControl">0분</div>
+                            <div class="chart-stat-label" id="statLabel2">제어공학 평균</div>
+                            <div class="chart-stat-value control" id="statValue2">0분</div>
                         </div>
                     </div>
                 </div>
@@ -2260,202 +2261,270 @@
             startBtn.addEventListener('click', requestWakeLock);
         }
 
-        // 그래프 관련 변수
+        // ===== 그래프 시스템 =====
         let studyChart = null;
-        let currentChartPeriod = 'week';
+        let currentChartPeriod = 'daily';
 
-        // 그래프 초기화
         function initChart() {
             const ctx = document.getElementById('studyChart').getContext('2d');
             studyChart = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: '특허법',
-                            data: [],
-                            backgroundColor: 'rgba(99, 102, 241, 0.7)',
-                            borderColor: 'rgba(99, 102, 241, 1)',
-                            borderWidth: 2,
-                            borderRadius: 6
-                        },
-                        {
-                            label: '제어공학',
-                            data: [],
-                            backgroundColor: 'rgba(236, 72, 153, 0.7)',
-                            borderColor: 'rgba(236, 72, 153, 1)',
-                            borderWidth: 2,
-                            borderRadius: 6
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    family: 'Noto Sans KR',
-                                    size: 11,
-                                    weight: '600'
-                                },
-                                padding: 10,
-                                boxWidth: 15
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const minutes = Math.round(context.parsed.y);
-                                    const hours = Math.floor(minutes / 60);
-                                    const mins = minutes % 60;
-                                    return `${context.dataset.label}: ${hours}시간 ${mins}분`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '분';
-                                },
-                                font: {
-                                    family: 'Noto Sans KR',
-                                    size: 10
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    family: 'Noto Sans KR',
-                                    size: 9
-                                },
-                                maxRotation: 45,
-                                minRotation: 45
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
+                data: { labels: [], datasets: [] },
+                options: getChartOptions()
             });
         }
 
-        // 그래프 데이터 업데이트
+        function getChartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true, position: 'top',
+                        labels: { font: { family: 'Noto Sans KR', size: 11, weight: '600' }, padding: 10, boxWidth: 15 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const v = Math.round(ctx.parsed.y);
+                                return `${ctx.dataset.label}: ${Math.floor(v/60)}시간 ${v%60}분`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: v => v >= 60 ? Math.floor(v/60)+'시간' : v+'분',
+                            font: { family: 'Noto Sans KR', size: 10 }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        ticks: { font: { family: 'Noto Sans KR', size: 9 }, maxRotation: 45, minRotation: 0 },
+                        grid: { display: false }
+                    }
+                }
+            };
+        }
+
         function updateChart(period) {
             const data = loadData();
-            const dates = getDateRange(period);
+            if (period === 'daily') updateDailyChart(data);
+            else if (period === 'weekly') updateWeeklyChart(data);
+            else updateMonthlyChart(data);
+        }
+
+        // ── 일간: 시간대별 평균 공부시간 ──
+        function updateDailyChart(data) {
+            document.getElementById('chartTitle').textContent = '📈 시간대별 평균 공부시간';
+            const hourBuckets = {};
+
+            ['patent-law', 'control-engineering'].forEach(subject => {
+                Object.values(data[subject].daily).forEach(sessions => {
+                    sessions.forEach(s => {
+                        const start = new Date(s.start);
+                        const end = new Date(s.end);
+                        let cur = new Date(start);
+                        while (cur < end) {
+                            const h = cur.getHours();
+                            const nextHour = new Date(cur);
+                            nextHour.setHours(h + 1, 0, 0, 0);
+                            const sliceEnd = nextHour < end ? nextHour : end;
+                            const mins = (sliceEnd - cur) / 60000;
+                            if (!hourBuckets[h]) hourBuckets[h] = { patent: [], control: [] };
+                            const key = subject === 'patent-law' ? 'patent' : 'control';
+                            hourBuckets[h][key].push(mins);
+                            cur = nextHour;
+                        }
+                    });
+                });
+            });
+
+            const hours = Object.keys(hourBuckets).map(Number).sort((a, b) => a - b);
+            if (hours.length === 0) {
+                setEmptyChart('공부 기록이 없습니다');
+                return;
+            }
+
+            const allDates = new Set();
+            ['patent-law', 'control-engineering'].forEach(subj => {
+                Object.keys(data[subj].daily).forEach(d => allDates.add(d));
+            });
+            const totalDays = Math.max(allDates.size, 1);
+
+            const labels = hours.map(h => `${h}시`);
+            const patentAvgs = hours.map(h => {
+                const total = hourBuckets[h].patent.reduce((a, b) => a + b, 0);
+                return Math.round(total / totalDays);
+            });
+            const controlAvgs = hours.map(h => {
+                const total = hourBuckets[h].control.reduce((a, b) => a + b, 0);
+                return Math.round(total / totalDays);
+            });
+
+            studyChart.data.labels = labels;
+            studyChart.data.datasets = [
+                { label: '특허법', data: patentAvgs, backgroundColor: 'rgba(99,102,241,0.7)', borderColor: 'rgba(99,102,241,1)', borderWidth: 2, borderRadius: 5 },
+                { label: '제어공학', data: controlAvgs, backgroundColor: 'rgba(236,72,153,0.7)', borderColor: 'rgba(236,72,153,1)', borderWidth: 2, borderRadius: 5 }
+            ];
+            studyChart.config.type = 'bar';
+            studyChart.options = getChartOptions();
+            studyChart.update();
+
+            const combined = hours.map(h => ({ h, total: patentAvgs[hours.indexOf(h)] + controlAvgs[hours.indexOf(h)] }));
+            combined.sort((a, b) => b.total - a.total);
+            const peak = combined[0];
+
+            document.getElementById('statLabel1').textContent = '가장 많이 공부한 시간대';
+            document.getElementById('statValue1').textContent = peak ? `${peak.h}시 ~ ${peak.h+1}시` : '-';
+            document.getElementById('statValue1').className = 'chart-stat-value patent';
+            document.getElementById('statLabel2').textContent = '일평균 총 공부시간';
+            const totalAllMinutes = [...Object.values(hourBuckets)].reduce((sum, b) =>
+                sum + b.patent.reduce((a,v)=>a+v,0) + b.control.reduce((a,v)=>a+v,0), 0);
+            document.getElementById('statValue2').textContent = formatMinutes(Math.round(totalAllMinutes / totalDays));
+            document.getElementById('statValue2').className = 'chart-stat-value control';
+        }
+
+        // ── 주간: 이번 주 월~일 일별 공부시간 + 평균선 ──
+        function updateWeeklyChart(data) {
+            document.getElementById('chartTitle').textContent = '📈 이번 주 일별 공부시간';
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            const monday = new Date(today);
+            monday.setDate(today.getDate() + mondayOffset);
+
+            const dayNames = ['월', '화', '수', '목', '금', '토', '일'];
             const labels = [];
             const patentData = [];
             const controlData = [];
 
-            dates.forEach(date => {
-                // 라벨 생성
-                const dateObj = new Date(date);
-                if (period === 'week') {
-                    const weekday = ['일', '월', '화', '수', '목', '금', '토'][dateObj.getDay()];
-                    labels.push(`${dateObj.getMonth() + 1}/${dateObj.getDate()}(${weekday})`);
-                } else {
-                    labels.push(`${dateObj.getMonth() + 1}/${dateObj.getDate()}`);
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(monday);
+                d.setDate(monday.getDate() + i);
+                const dateStr = d.toISOString().split('T')[0];
+                labels.push(`${d.getMonth()+1}/${d.getDate()}(${dayNames[i]})`);
+
+                let pm = 0, cm = 0;
+                if (data['patent-law'].daily[dateStr]) {
+                    pm = Math.round(data['patent-law'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0) / 60000);
                 }
-
-                // 데이터 수집 (분 단위로 변환)
-                let patentMinutes = 0;
-                let controlMinutes = 0;
-
-                if (data['patent-law'].daily[date]) {
-                    const sessions = data['patent-law'].daily[date];
-                    const totalMs = sessions.reduce((sum, session) => sum + session.duration, 0);
-                    patentMinutes = Math.round(totalMs / 60000);
+                if (data['control-engineering'].daily[dateStr]) {
+                    cm = Math.round(data['control-engineering'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0) / 60000);
                 }
+                patentData.push(pm);
+                controlData.push(cm);
+            }
 
-                if (data['control-engineering'].daily[date]) {
-                    const sessions = data['control-engineering'].daily[date];
-                    const totalMs = sessions.reduce((sum, session) => sum + session.duration, 0);
-                    controlMinutes = Math.round(totalMs / 60000);
+            const totalPerDay = patentData.map((p, i) => p + controlData[i]);
+            const avgMinutes = Math.round(totalPerDay.reduce((a, b) => a + b, 0) / 7);
+            const avgLine = new Array(7).fill(avgMinutes);
+
+            studyChart.data.labels = labels;
+            studyChart.data.datasets = [
+                { label: '특허법', data: patentData, backgroundColor: 'rgba(99,102,241,0.7)', borderColor: 'rgba(99,102,241,1)', borderWidth: 2, borderRadius: 6, order: 2 },
+                { label: '제어공학', data: controlData, backgroundColor: 'rgba(236,72,153,0.7)', borderColor: 'rgba(236,72,153,1)', borderWidth: 2, borderRadius: 6, order: 2 },
+                { label: '일평균', data: avgLine, type: 'line', borderColor: 'rgba(251,191,36,1)', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6, 4], pointRadius: 0, order: 1 }
+            ];
+            studyChart.config.type = 'bar';
+            studyChart.options = getChartOptions();
+            studyChart.update();
+
+            const weekTotal = totalPerDay.reduce((a, b) => a + b, 0);
+            document.getElementById('statLabel1').textContent = '이번 주 총 공부시간';
+            document.getElementById('statValue1').textContent = formatMinutes(weekTotal);
+            document.getElementById('statValue1').className = 'chart-stat-value patent';
+            document.getElementById('statLabel2').textContent = '일 평균 공부시간';
+            document.getElementById('statValue2').textContent = formatMinutes(avgMinutes);
+            document.getElementById('statValue2').className = 'chart-stat-value control';
+        }
+
+        // ── 월간: 이번 달 주별 공부시간 + 평균선 ──
+        function updateMonthlyChart(data) {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const monthName = `${month + 1}월`;
+            document.getElementById('chartTitle').textContent = `📈 ${year}년 ${monthName} 주별 공부시간`;
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            const weeks = [];
+            let weekStart = new Date(firstDay);
+            while (weekStart <= lastDay) {
+                let weekEnd = new Date(weekStart);
+                const daysUntilSunday = weekStart.getDay() === 0 ? 0 : 7 - weekStart.getDay();
+                weekEnd.setDate(weekStart.getDate() + daysUntilSunday);
+                if (weekEnd > lastDay) weekEnd = new Date(lastDay);
+                weeks.push({ start: new Date(weekStart), end: new Date(weekEnd) });
+                const nextMon = new Date(weekEnd);
+                nextMon.setDate(weekEnd.getDate() + 1);
+                weekStart = nextMon;
+            }
+
+            const labels = [];
+            const patentData = [];
+            const controlData = [];
+
+            weeks.forEach((w, i) => {
+                const sStr = `${w.start.getMonth()+1}/${w.start.getDate()}`;
+                const eStr = `${w.end.getMonth()+1}/${w.end.getDate()}`;
+                labels.push(`${i+1}주차`);
+
+                let pm = 0, cm = 0;
+                for (let d = new Date(w.start); d <= w.end; d.setDate(d.getDate() + 1)) {
+                    const dateStr = d.toISOString().split('T')[0];
+                    if (data['patent-law'].daily[dateStr]) {
+                        pm += data['patent-law'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0);
+                    }
+                    if (data['control-engineering'].daily[dateStr]) {
+                        cm += data['control-engineering'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0);
+                    }
                 }
-
-                patentData.push(patentMinutes);
-                controlData.push(controlMinutes);
+                patentData.push(Math.round(pm / 60000));
+                controlData.push(Math.round(cm / 60000));
             });
 
-            // 평균 계산
-            let patentAvg, controlAvg;
-            
-            if (period === 'week') {
-                // 주간: 일별 평균
-                patentAvg = patentData.reduce((a, b) => a + b, 0) / dates.length;
-                controlAvg = controlData.reduce((a, b) => a + b, 0) / dates.length;
-                
-                document.querySelector('#avgPatent').previousElementSibling.textContent = '특허법 평균 (일별)';
-                document.querySelector('#avgControl').previousElementSibling.textContent = '제어공학 평균 (일별)';
-            } else {
-                // 월간: 주별 평균 (30일을 주 단위로 나눔)
-                const weeksCount = Math.ceil(dates.length / 7);
-                let patentWeeklyTotal = 0;
-                let controlWeeklyTotal = 0;
-                
-                for (let i = 0; i < weeksCount; i++) {
-                    const weekStart = i * 7;
-                    const weekEnd = Math.min((i + 1) * 7, dates.length);
-                    
-                    const patentWeekSum = patentData.slice(weekStart, weekEnd).reduce((a, b) => a + b, 0);
-                    const controlWeekSum = controlData.slice(weekStart, weekEnd).reduce((a, b) => a + b, 0);
-                    
-                    patentWeeklyTotal += patentWeekSum;
-                    controlWeeklyTotal += controlWeekSum;
-                }
-                
-                patentAvg = patentWeeklyTotal / weeksCount;
-                controlAvg = controlWeeklyTotal / weeksCount;
-                
-                document.querySelector('#avgPatent').previousElementSibling.textContent = '특허법 평균 (주별)';
-                document.querySelector('#avgControl').previousElementSibling.textContent = '제어공학 평균 (주별)';
-            }
+            const totalPerWeek = patentData.map((p, i) => p + controlData[i]);
+            const avgWeekly = weeks.length > 0 ? Math.round(totalPerWeek.reduce((a, b) => a + b, 0) / weeks.length) : 0;
+            const avgLine = new Array(weeks.length).fill(avgWeekly);
 
-            document.getElementById('avgPatent').textContent = formatMinutes(Math.round(patentAvg));
-            document.getElementById('avgControl').textContent = formatMinutes(Math.round(controlAvg));
-
-            // 그래프 업데이트
             studyChart.data.labels = labels;
-            studyChart.data.datasets[0].data = patentData;
-            studyChart.data.datasets[1].data = controlData;
+            studyChart.data.datasets = [
+                { label: '특허법', data: patentData, backgroundColor: 'rgba(99,102,241,0.7)', borderColor: 'rgba(99,102,241,1)', borderWidth: 2, borderRadius: 6, order: 2 },
+                { label: '제어공학', data: controlData, backgroundColor: 'rgba(236,72,153,0.7)', borderColor: 'rgba(236,72,153,1)', borderWidth: 2, borderRadius: 6, order: 2 },
+                { label: '주평균', data: avgLine, type: 'line', borderColor: 'rgba(251,191,36,1)', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6, 4], pointRadius: 0, order: 1 }
+            ];
+            studyChart.config.type = 'bar';
+            studyChart.options = getChartOptions();
             studyChart.update();
+
+            const monthTotal = totalPerWeek.reduce((a, b) => a + b, 0);
+            document.getElementById('statLabel1').textContent = `${monthName} 총 공부시간`;
+            document.getElementById('statValue1').textContent = formatMinutes(monthTotal);
+            document.getElementById('statValue1').className = 'chart-stat-value patent';
+            document.getElementById('statLabel2').textContent = '주 평균 공부시간';
+            document.getElementById('statValue2').textContent = formatMinutes(avgWeekly);
+            document.getElementById('statValue2').className = 'chart-stat-value control';
         }
 
-        // 날짜 범위 생성
-        function getDateRange(period) {
-            const dates = [];
-            const today = new Date();
-            const days = period === 'week' ? 7 : 30;
-
-            for (let i = days - 1; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                dates.push(date.toISOString().split('T')[0]);
-            }
-
-            return dates;
+        function setEmptyChart(msg) {
+            studyChart.data.labels = [msg];
+            studyChart.data.datasets = [{ label: '', data: [0], backgroundColor: 'rgba(0,0,0,0.05)' }];
+            studyChart.update();
+            document.getElementById('statLabel1').textContent = '-';
+            document.getElementById('statValue1').textContent = '-';
+            document.getElementById('statLabel2').textContent = '-';
+            document.getElementById('statValue2').textContent = '-';
         }
 
-        // 분을 "X시간 Y분" 형식으로 변환
         function formatMinutes(minutes) {
             const hours = Math.floor(minutes / 60);
             const mins = minutes % 60;
-            if (hours === 0) {
-                return `${mins}분`;
-            }
+            if (hours === 0) return `${mins}분`;
             return `${hours}시간 ${mins}분`;
         }
 
