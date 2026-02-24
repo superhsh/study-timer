@@ -654,6 +654,61 @@
             color: #94a3b8;
         }
 
+        /* ===== 카테고리 선택 스타일 ===== */
+        .category-selector {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .category-selector label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            width: 100%;
+            margin-bottom: 2px;
+        }
+
+        .category-chip {
+            padding: 6px 14px;
+            border: 2px solid var(--border);
+            border-radius: 18px;
+            background: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .category-chip:active { transform: scale(0.95); }
+        .category-chip.selected { color: white; border-color: transparent; }
+        .category-chip[data-cat="reading"].selected { background: #3b82f6; }
+        .category-chip[data-cat="lecture"].selected { background: #10b981; }
+        .category-chip[data-cat="memorize"].selected { background: #f59e0b; }
+        .category-chip[data-cat="review"].selected { background: #8b5cf6; }
+        .category-chip[data-cat="writing"].selected { background: #06b6d4; }
+
+        .category-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: white;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        .category-badge.reading { background: #3b82f6; }
+        .category-badge.lecture { background: #10b981; }
+        .category-badge.memorize { background: #f59e0b; }
+        .category-badge.review-cat { background: #8b5cf6; }
+        .category-badge.writing { background: #06b6d4; }
+
         /* ===== 복습 일정 스타일 ===== */
         .review-section {
             margin-bottom: 15px;
@@ -1176,6 +1231,13 @@
                 </div>
                 <div class="form-group">
                     <label for="manualMemo">학습 내용 (선택)</label>
+                    <div class="category-selector" id="manualCategorySelector">
+                        <div class="category-chip" data-cat="reading">회독</div>
+                        <div class="category-chip" data-cat="lecture">수강</div>
+                        <div class="category-chip" data-cat="memorize">암기</div>
+                        <div class="category-chip" data-cat="review">복습</div>
+                        <div class="category-chip" data-cat="writing">쓰기</div>
+                    </div>
                     <textarea id="manualMemo" class="memo-textarea" placeholder="예: 특허법 제29조 신규성 정리..." rows="2" style="min-height:60px;"></textarea>
                 </div>
                 <div class="modal-buttons">
@@ -1191,6 +1253,14 @@
         <div class="memo-modal-content">
             <h3>📝 학습 내용 기록</h3>
             <div class="memo-session-info" id="memoSessionInfo"></div>
+            <div class="category-selector" id="memoCategorySelector">
+                <label>카테고리</label>
+                <div class="category-chip" data-cat="reading">회독</div>
+                <div class="category-chip" data-cat="lecture">수강</div>
+                <div class="category-chip" data-cat="memorize">암기</div>
+                <div class="category-chip" data-cat="review">복습</div>
+                <div class="category-chip" data-cat="writing">쓰기</div>
+            </div>
             <textarea id="memoTextarea" class="memo-textarea" placeholder="어떤 내용을 공부했나요?"></textarea>
             <div class="modal-buttons">
                 <button type="button" class="modal-btn cancel" id="memoSkipBtn">건너뛰기</button>
@@ -1218,6 +1288,13 @@
             </div>
             <div class="form-group">
                 <label for="editMemo">학습 내용</label>
+                <div class="category-selector" id="editCategorySelector">
+                    <div class="category-chip" data-cat="reading">회독</div>
+                    <div class="category-chip" data-cat="lecture">수강</div>
+                    <div class="category-chip" data-cat="memorize">암기</div>
+                    <div class="category-chip" data-cat="review">복습</div>
+                    <div class="category-chip" data-cat="writing">쓰기</div>
+                </div>
                 <textarea id="editMemo" class="memo-textarea" placeholder="학습 내용을 입력하세요..." style="min-height:60px;"></textarea>
             </div>
             <div class="edit-modal-buttons">
@@ -1240,6 +1317,49 @@
             'control-engineering': '제어공학'
         };
 
+        // ===== 카테고리 시스템 =====
+        const CATEGORIES = {
+            'reading': '회독', 'lecture': '수강', 'memorize': '암기',
+            'review': '복습', 'writing': '쓰기'
+        };
+        const REVIEW_CATEGORIES = ['reading', 'memorize'];
+
+        function getCategoryBadge(cat) {
+            if (!cat || !CATEGORIES[cat]) return '';
+            const cls = cat === 'review' ? 'review-cat' : cat;
+            return `<span class="category-badge ${cls}">${CATEGORIES[cat]}</span>`;
+        }
+
+        function initCategoryChips(selectorId) {
+            const container = document.getElementById(selectorId);
+            if (!container) return;
+            container.querySelectorAll('.category-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    container.querySelectorAll('.category-chip').forEach(c => c.classList.remove('selected'));
+                    chip.classList.add('selected');
+                });
+            });
+        }
+
+        function getSelectedCategory(selectorId) {
+            const sel = document.querySelector(`#${selectorId} .category-chip.selected`);
+            return sel ? sel.dataset.cat : '';
+        }
+
+        function setSelectedCategory(selectorId, cat) {
+            const container = document.getElementById(selectorId);
+            if (!container) return;
+            container.querySelectorAll('.category-chip').forEach(c => c.classList.remove('selected'));
+            if (cat) {
+                const chip = container.querySelector(`.category-chip[data-cat="${cat}"]`);
+                if (chip) chip.classList.add('selected');
+            }
+        }
+
+        initCategoryChips('manualCategorySelector');
+        initCategoryChips('memoCategorySelector');
+        initCategoryChips('editCategorySelector');
+
         // 고유한 localStorage 키 사용
         const STORAGE_KEY = 'patentExamStudyTimer_v1';
 
@@ -1256,11 +1376,13 @@
                                 start: new Date(date + 'T00:00:00').getTime(),
                                 end: new Date(date + 'T00:00:00').getTime() + parsed[subject].daily[date],
                                 duration: parsed[subject].daily[date],
-                                memo: ''
+                                memo: '',
+                                category: ''
                             }];
                         } else if (Array.isArray(parsed[subject].daily[date])) {
                             parsed[subject].daily[date].forEach(session => {
                                 if (session.memo === undefined) session.memo = '';
+                                if (session.category === undefined) session.category = '';
                             });
                         }
                     });
@@ -1378,7 +1500,8 @@
                 start: sessionStart,
                 end: now,
                 duration: elapsedTime,
-                memo: ''
+                memo: '',
+                category: ''
             });
             
             const sessionIndex = data[currentSubject].daily[today].length - 1;
@@ -1415,6 +1538,7 @@
             document.getElementById('memoSessionInfo').textContent = 
                 `${subjectNames[subject]} | ${startStr} ~ ${endStr}`;
             memoTextarea.value = '';
+            setSelectedCategory('memoCategorySelector', '');
             memoModalOverlay.classList.add('active');
             setTimeout(() => memoTextarea.focus(), 150);
         }
@@ -1422,8 +1546,9 @@
         memoSaveBtn.addEventListener('click', () => {
             if (pendingMemo) {
                 const memo = memoTextarea.value.trim();
-                if (memo) {
-                    saveMemoToSession(pendingMemo.subject, pendingMemo.date, pendingMemo.sessionIndex, memo);
+                const category = getSelectedCategory('memoCategorySelector');
+                if (memo || category) {
+                    saveMemoToSession(pendingMemo.subject, pendingMemo.date, pendingMemo.sessionIndex, memo, category);
                 }
             }
             closeMemoModal();
@@ -1440,16 +1565,23 @@
         function closeMemoModal() {
             memoModalOverlay.classList.remove('active');
             memoTextarea.value = '';
+            setSelectedCategory('memoCategorySelector', '');
             pendingMemo = null;
         }
 
-        function saveMemoToSession(subject, date, sessionIndex, memo) {
+        function saveMemoToSession(subject, date, sessionIndex, memo, category) {
             const data = loadData();
             if (data[subject] && data[subject].daily[date] && data[subject].daily[date][sessionIndex] !== undefined) {
                 data[subject].daily[date][sessionIndex].memo = memo;
+                if (category !== undefined) data[subject].daily[date][sessionIndex].category = category;
                 saveData(data);
                 const session = data[subject].daily[date][sessionIndex];
-                createOrUpdateReview(subject, date, session.start, memo);
+                const cat = session.category || '';
+                if (memo && REVIEW_CATEGORIES.includes(cat)) {
+                    createOrUpdateReview(subject, date, session.start, memo, cat);
+                } else {
+                    removeReview(subject, session.start);
+                }
                 updateStats();
             }
         }
@@ -1466,6 +1598,7 @@
             document.getElementById('memoSessionInfo').textContent = 
                 `${subjectNames[subject]} | ${startStr} ~ ${endStr}`;
             memoTextarea.value = session.memo || '';
+            setSelectedCategory('memoCategorySelector', session.category || '');
             memoModalOverlay.classList.add('active');
             setTimeout(() => memoTextarea.focus(), 150);
         }
@@ -1499,7 +1632,7 @@
             return new Date().toISOString().split('T')[0];
         }
 
-        function createOrUpdateReview(subject, studyDate, sessionStart, memo) {
+        function createOrUpdateReview(subject, studyDate, sessionStart, memo, category) {
             if (!memo || !memo.trim()) {
                 removeReview(subject, sessionStart);
                 return;
@@ -1521,9 +1654,9 @@
                     const oldItem = old.schedule.find(os => os.interval === s.interval);
                     if (oldItem) s.done = oldItem.done;
                 });
-                reviews[existingIdx] = { id, subject, memo: memo.trim(), studyDate, sessionStart, schedule };
+                reviews[existingIdx] = { id, subject, memo: memo.trim(), category: category || '', studyDate, sessionStart, schedule };
             } else {
-                reviews.push({ id, subject, memo: memo.trim(), studyDate, sessionStart, schedule });
+                reviews.push({ id, subject, memo: memo.trim(), category: category || '', studyDate, sessionStart, schedule });
             }
 
             saveReviews(reviews);
@@ -1714,7 +1847,7 @@
                 html += `<span class="review-subject-badge ${subjectClass}">${subjectLabel}</span>`;
                 html += `<span style="font-size:0.72rem; color:#94a3b8;">학습일: ${formatDateKR(review.studyDate)}</span>`;
                 html += `</div>`;
-                html += `<div style="font-size:0.88rem; color:var(--text-primary); line-height:1.5;">${review.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                html += `<div style="font-size:0.88rem; color:var(--text-primary); line-height:1.5;">${getCategoryBadge(review.category)}${review.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
                 html += `</div>`;
                 html += `<button class="review-delete-btn" onclick="deleteReview('${review.id}')" title="삭제">🗑</button>`;
                 html += `</div>`;
@@ -1764,7 +1897,7 @@
                             <span class="review-interval">${INTERVAL_LABELS[scheduleItem.interval]}</span>
                             <span class="review-study-date">학습일: ${formatDateKR(review.studyDate)}</span>
                         </div>
-                        <div class="review-memo">${review.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+                        <div class="review-memo">${getCategoryBadge(review.category)}${review.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
                     </div>
                     <button class="review-delete-btn" onclick="deleteReview('${review.id}')" title="삭제">🗑</button>
                 </div>
@@ -1806,6 +1939,7 @@
                 String(endD.getHours()).padStart(2,'0') + ':' + String(endD.getMinutes()).padStart(2,'0');
 
             document.getElementById('editMemo').value = session.memo || '';
+            setSelectedCategory('editCategorySelector', session.category || '');
             editSessionOverlay.classList.add('active');
         }
 
@@ -1816,6 +1950,7 @@
             const sTime = document.getElementById('editStartTime').value;
             const eTime = document.getElementById('editEndTime').value;
             const newMemo = document.getElementById('editMemo').value.trim();
+            const newCategory = getSelectedCategory('editCategorySelector');
 
             if (!newDate || !sTime || !eTime) {
                 alert('날짜, 시작 시간, 종료 시간을 모두 입력해주세요.');
@@ -1859,7 +1994,8 @@
                 start: newStart.getTime(),
                 end: newEnd.getTime(),
                 duration: newDuration,
-                memo: newMemo
+                memo: newMemo,
+                category: newCategory
             });
             data[subject].daily[newDate].sort((a, b) => a.start - b.start);
             data[subject].total += newDuration;
@@ -1867,8 +2003,8 @@
             saveData(data);
 
             removeReview(subject, originalStart);
-            if (newMemo) {
-                createOrUpdateReview(subject, newDate, newStart.getTime(), newMemo);
+            if (newMemo && REVIEW_CATEGORIES.includes(newCategory)) {
+                createOrUpdateReview(subject, newDate, newStart.getTime(), newMemo, newCategory);
             }
 
             closeEditSession();
@@ -1970,8 +2106,9 @@
                         const endTime = new Date(session.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const duration = formatTimeToHM(session.duration);
                         const memo = session.memo || '';
-                        const memoDisplay = memo 
-                            ? `<span class="memo-text">${memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`
+                        const catBadge = getCategoryBadge(session.category);
+                        const memoDisplay = (memo || session.category)
+                            ? `${catBadge}<span class="memo-text">${memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`
                             : `<span class="memo-placeholder">+ 학습 내용 추가</span>`;
                         
                         html += `
@@ -2010,8 +2147,9 @@
                         const endTime = new Date(session.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const duration = formatTimeToHM(session.duration);
                         const memo = session.memo || '';
-                        const memoDisplay = memo 
-                            ? `<span class="memo-text">${memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`
+                        const catBadge = getCategoryBadge(session.category);
+                        const memoDisplay = (memo || session.category)
+                            ? `${catBadge}<span class="memo-text">${memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`
                             : `<span class="memo-placeholder">+ 학습 내용 추가</span>`;
                         
                         html += `
@@ -2079,6 +2217,7 @@
             document.getElementById('manualStartTime').value = '';
             document.getElementById('manualEndTime').value = '';
             document.getElementById('manualMemo').value = '';
+            setSelectedCategory('manualCategorySelector', '');
         }
 
         // 모달 열기
@@ -2153,7 +2292,8 @@
                     start: startDateTime.getTime(),
                     end: endDateTime.getTime(),
                     duration: duration,
-                    memo: document.getElementById('manualMemo').value.trim()
+                    memo: document.getElementById('manualMemo').value.trim(),
+                    category: getSelectedCategory('manualCategorySelector')
                 };
                 
                 data[subject].daily[date].push(session);
@@ -2161,8 +2301,8 @@
 
                 saveData(data);
 
-                if (session.memo) {
-                    createOrUpdateReview(subject, date, session.start, session.memo);
+                if (session.memo && REVIEW_CATEGORIES.includes(session.category)) {
+                    createOrUpdateReview(subject, date, session.start, session.memo, session.category);
                 }
                 
                 updateStats();
