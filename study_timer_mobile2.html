@@ -537,6 +537,82 @@
             color: var(--text-primary);
         }
 
+        .chart-nav {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 8px 10px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .chart-nav.visible { display: flex; }
+
+        .chart-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: white;
+            border-radius: 7px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            touch-action: manipulation;
+            flex-shrink: 0;
+        }
+
+        .chart-nav-btn:active { background: var(--secondary); color: white; }
+        .chart-nav-btn:disabled { opacity: 0.3; background: white; color: var(--text-secondary); }
+
+        .chart-nav-label {
+            flex: 1;
+            text-align: center;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-slider-wrap {
+            display: none;
+            padding: 0 4px;
+            margin-bottom: 8px;
+        }
+
+        .chart-slider-wrap.visible { display: block; }
+
+        .chart-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .chart-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--secondary);
+            cursor: pointer;
+        }
+
+        .chart-slider::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--secondary);
+            cursor: pointer;
+            border: none;
+        }
+
         .chart-wrapper {
             position: relative;
             height: 250px;
@@ -1135,13 +1211,21 @@
             <!-- 그래프 섹션 -->
             <div class="chart-section">
                 <div class="chart-tabs">
-                    <button class="chart-tab active" data-period="daily">일간 통계</button>
-                    <button class="chart-tab" data-period="weekly">주간 통계</button>
-                    <button class="chart-tab" data-period="monthly">월간 통계</button>
+                    <button class="chart-tab active" data-period="daily">시간대별 통계</button>
+                    <button class="chart-tab" data-period="weekly">일별 통계</button>
+                    <button class="chart-tab" data-period="monthly">주별 통계</button>
                 </div>
                 
                 <div class="chart-container">
                     <div class="chart-title" id="chartTitle">📈 시간대별 평균 공부시간</div>
+                    <div class="chart-nav" id="chartNav">
+                        <button class="chart-nav-btn" id="chartNavPrev">◀</button>
+                        <div class="chart-nav-label" id="chartNavLabel"></div>
+                        <button class="chart-nav-btn" id="chartNavNext">▶</button>
+                    </div>
+                    <div class="chart-slider-wrap" id="chartSliderWrap">
+                        <input type="range" class="chart-slider" id="chartSlider" min="0" max="0" value="0">
+                    </div>
                     <div class="chart-wrapper">
                         <canvas id="studyChart"></canvas>
                     </div>
@@ -2404,6 +2488,8 @@
         // ===== 그래프 시스템 =====
         let studyChart = null;
         let currentChartPeriod = 'daily';
+        let weeklyOffset = 0;
+        let monthlyOffset = 0;
 
         function initChart() {
             const ctx = document.getElementById('studyChart').getContext('2d');
@@ -2449,6 +2535,71 @@
             };
         }
 
+        function getEarliestDate(data) {
+            let earliest = null;
+            ['patent-law', 'control-engineering'].forEach(subj => {
+                Object.keys(data[subj].daily).forEach(d => {
+                    if (!earliest || d < earliest) earliest = d;
+                });
+            });
+            return earliest;
+        }
+
+        function getMaxWeeklyOffset(data) {
+            const earliest = getEarliestDate(data);
+            if (!earliest) return 0;
+            const diffDays = Math.floor((new Date() - new Date(earliest)) / 86400000);
+            return Math.max(0, Math.floor(diffDays / 7));
+        }
+
+        function getMaxMonthlyOffset(data) {
+            const earliest = getEarliestDate(data);
+            if (!earliest) return 0;
+            const diffDays = Math.floor((new Date() - new Date(earliest)) / 86400000);
+            return Math.max(0, Math.floor(diffDays / 28));
+        }
+
+        const chartNav = document.getElementById('chartNav');
+        const chartNavLabel = document.getElementById('chartNavLabel');
+        const chartNavPrev = document.getElementById('chartNavPrev');
+        const chartNavNext = document.getElementById('chartNavNext');
+        const chartSliderWrap = document.getElementById('chartSliderWrap');
+        const chartSlider = document.getElementById('chartSlider');
+
+        function showNav(show) {
+            chartNav.classList.toggle('visible', show);
+            chartSliderWrap.classList.toggle('visible', show);
+        }
+
+        function updateNavUI(offset, maxOffset, labelText) {
+            chartNavLabel.textContent = labelText;
+            chartNavPrev.disabled = (offset >= maxOffset);
+            chartNavNext.disabled = (offset <= 0);
+            chartSlider.min = 0;
+            chartSlider.max = maxOffset;
+            chartSlider.value = maxOffset - offset;
+        }
+
+        chartNavPrev.addEventListener('click', () => {
+            if (currentChartPeriod === 'weekly') weeklyOffset++;
+            else if (currentChartPeriod === 'monthly') monthlyOffset++;
+            updateChart(currentChartPeriod);
+        });
+
+        chartNavNext.addEventListener('click', () => {
+            if (currentChartPeriod === 'weekly') weeklyOffset = Math.max(0, weeklyOffset - 1);
+            else if (currentChartPeriod === 'monthly') monthlyOffset = Math.max(0, monthlyOffset - 1);
+            updateChart(currentChartPeriod);
+        });
+
+        chartSlider.addEventListener('input', () => {
+            const maxOff = parseInt(chartSlider.max);
+            const newOffset = maxOff - parseInt(chartSlider.value);
+            if (currentChartPeriod === 'weekly') weeklyOffset = newOffset;
+            else if (currentChartPeriod === 'monthly') monthlyOffset = newOffset;
+            updateChart(currentChartPeriod);
+        });
+
         function updateChart(period) {
             const data = loadData();
             if (period === 'daily') updateDailyChart(data);
@@ -2456,8 +2607,9 @@
             else updateMonthlyChart(data);
         }
 
-        // ── 일간: 시간대별 평균 공부시간 ──
+        // ── 시간대별 통계 ──
         function updateDailyChart(data) {
+            showNav(false);
             document.getElementById('chartTitle').textContent = '📈 시간대별 평균 공부시간';
             const hourBuckets = {};
 
@@ -2483,10 +2635,7 @@
             });
 
             const hours = Object.keys(hourBuckets).map(Number).sort((a, b) => a - b);
-            if (hours.length === 0) {
-                setEmptyChart('공부 기록이 없습니다');
-                return;
-            }
+            if (hours.length === 0) { setEmptyChart('공부 기록이 없습니다'); return; }
 
             const allDates = new Set();
             ['patent-law', 'control-engineering'].forEach(subj => {
@@ -2495,14 +2644,8 @@
             const totalDays = Math.max(allDates.size, 1);
 
             const labels = hours.map(h => `${h}시`);
-            const patentAvgs = hours.map(h => {
-                const total = hourBuckets[h].patent.reduce((a, b) => a + b, 0);
-                return Math.round(total / totalDays);
-            });
-            const controlAvgs = hours.map(h => {
-                const total = hourBuckets[h].control.reduce((a, b) => a + b, 0);
-                return Math.round(total / totalDays);
-            });
+            const patentAvgs = hours.map(h => Math.round(hourBuckets[h].patent.reduce((a, b) => a + b, 0) / totalDays));
+            const controlAvgs = hours.map(h => Math.round(hourBuckets[h].control.reduce((a, b) => a + b, 0) / totalDays));
 
             studyChart.data.labels = labels;
             studyChart.data.datasets = [
@@ -2527,25 +2670,34 @@
             document.getElementById('statValue2').className = 'chart-stat-value control';
         }
 
-        // ── 주간: 이번 주 월~일 일별 공부시간 + 평균선 ──
+        // ── 일별 통계: 오늘 포함 과거 7일, 슬라이더 ──
         function updateWeeklyChart(data) {
-            document.getElementById('chartTitle').textContent = '📈 이번 주 일별 공부시간';
-            const today = new Date();
-            const dayOfWeek = today.getDay();
-            const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-            const monday = new Date(today);
-            monday.setDate(today.getDate() + mondayOffset);
+            showNav(true);
+            const maxOff = getMaxWeeklyOffset(data);
+            if (weeklyOffset > maxOff) weeklyOffset = maxOff;
 
-            const dayNames = ['월', '화', '수', '목', '금', '토', '일'];
+            const today = new Date();
+            const endDate = new Date(today);
+            endDate.setDate(today.getDate() - weeklyOffset * 7);
+            const startDate = new Date(endDate);
+            startDate.setDate(endDate.getDate() - 6);
+
+            const startLabel = `${startDate.getMonth()+1}/${startDate.getDate()}`;
+            const endLabel = `${endDate.getMonth()+1}/${endDate.getDate()}`;
+            const navLabel = weeklyOffset === 0 ? `${startLabel} ~ 오늘` : `${startLabel} ~ ${endLabel}`;
+            document.getElementById('chartTitle').textContent = '📈 일별 공부시간';
+            updateNavUI(weeklyOffset, maxOff, navLabel);
+
+            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
             const labels = [];
             const patentData = [];
             const controlData = [];
 
             for (let i = 0; i < 7; i++) {
-                const d = new Date(monday);
-                d.setDate(monday.getDate() + i);
+                const d = new Date(startDate);
+                d.setDate(startDate.getDate() + i);
                 const dateStr = d.toISOString().split('T')[0];
-                labels.push(`${d.getMonth()+1}/${d.getDate()}(${dayNames[i]})`);
+                labels.push(`${d.getMonth()+1}/${d.getDate()}(${dayNames[d.getDay()]})`);
 
                 let pm = 0, cm = 0;
                 if (data['patent-law'].daily[dateStr]) {
@@ -2573,7 +2725,7 @@
             studyChart.update();
 
             const weekTotal = totalPerDay.reduce((a, b) => a + b, 0);
-            document.getElementById('statLabel1').textContent = '이번 주 총 공부시간';
+            document.getElementById('statLabel1').textContent = '해당 기간 총 공부시간';
             document.getElementById('statValue1').textContent = formatMinutes(weekTotal);
             document.getElementById('statValue1').className = 'chart-stat-value patent';
             document.getElementById('statLabel2').textContent = '일 평균 공부시간';
@@ -2581,28 +2733,34 @@
             document.getElementById('statValue2').className = 'chart-stat-value control';
         }
 
-        // ── 월간: 이번 달 주별 공부시간 + 평균선 ──
+        // ── 주별 통계: 이번 주 포함 과거 4주, 슬라이더 ──
         function updateMonthlyChart(data) {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            const monthName = `${month + 1}월`;
-            document.getElementById('chartTitle').textContent = `📈 ${year}년 ${monthName} 주별 공부시간`;
+            showNav(true);
+            const maxOff = getMaxMonthlyOffset(data);
+            if (monthlyOffset > maxOff) monthlyOffset = maxOff;
 
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const thisSunday = new Date(today);
+            if (dayOfWeek !== 0) thisSunday.setDate(today.getDate() + (7 - dayOfWeek));
+
+            const endSunday = new Date(thisSunday);
+            endSunday.setDate(thisSunday.getDate() - monthlyOffset * 28);
+            const startMonday = new Date(endSunday);
+            startMonday.setDate(endSunday.getDate() - 27);
+
+            const startLabel = `${startMonday.getFullYear()}.${startMonday.getMonth()+1}.${startMonday.getDate()}`;
+            const endLabel = monthlyOffset === 0 ? '오늘' : `${endSunday.getFullYear()}.${endSunday.getMonth()+1}.${endSunday.getDate()}`;
+            document.getElementById('chartTitle').textContent = '📈 주별 공부시간';
+            updateNavUI(monthlyOffset, maxOff, `${startLabel} ~ ${endLabel}`);
 
             const weeks = [];
-            let weekStart = new Date(firstDay);
-            while (weekStart <= lastDay) {
-                let weekEnd = new Date(weekStart);
-                const daysUntilSunday = weekStart.getDay() === 0 ? 0 : 7 - weekStart.getDay();
-                weekEnd.setDate(weekStart.getDate() + daysUntilSunday);
-                if (weekEnd > lastDay) weekEnd = new Date(lastDay);
-                weeks.push({ start: new Date(weekStart), end: new Date(weekEnd) });
-                const nextMon = new Date(weekEnd);
-                nextMon.setDate(weekEnd.getDate() + 1);
-                weekStart = nextMon;
+            for (let w = 0; w < 4; w++) {
+                const wStart = new Date(startMonday);
+                wStart.setDate(startMonday.getDate() + w * 7);
+                const wEnd = new Date(wStart);
+                wEnd.setDate(wStart.getDate() + 6);
+                weeks.push({ start: new Date(wStart), end: new Date(wEnd) });
             }
 
             const labels = [];
@@ -2629,8 +2787,8 @@
             });
 
             const totalPerWeek = patentData.map((p, i) => p + controlData[i]);
-            const avgWeekly = weeks.length > 0 ? Math.round(totalPerWeek.reduce((a, b) => a + b, 0) / weeks.length) : 0;
-            const avgLine = new Array(weeks.length).fill(avgWeekly);
+            const avgWeekly = Math.round(totalPerWeek.reduce((a, b) => a + b, 0) / 4);
+            const avgLine = new Array(4).fill(avgWeekly);
 
             studyChart.data.labels = labels;
             studyChart.data.datasets = [
@@ -2642,9 +2800,9 @@
             studyChart.options = getChartOptions();
             studyChart.update();
 
-            const monthTotal = totalPerWeek.reduce((a, b) => a + b, 0);
-            document.getElementById('statLabel1').textContent = `${monthName} 총 공부시간`;
-            document.getElementById('statValue1').textContent = formatMinutes(monthTotal);
+            const total = totalPerWeek.reduce((a, b) => a + b, 0);
+            document.getElementById('statLabel1').textContent = '해당 기간 총 공부시간';
+            document.getElementById('statValue1').textContent = formatMinutes(total);
             document.getElementById('statValue1').className = 'chart-stat-value patent';
             document.getElementById('statLabel2').textContent = '주 평균 공부시간';
             document.getElementById('statValue2').textContent = formatMinutes(avgWeekly);
@@ -2652,6 +2810,7 @@
         }
 
         function setEmptyChart(msg) {
+            showNav(false);
             studyChart.data.labels = [msg];
             studyChart.data.datasets = [{ label: '', data: [0], backgroundColor: 'rgba(0,0,0,0.05)' }];
             studyChart.update();
@@ -2674,6 +2833,8 @@
                 document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 currentChartPeriod = tab.dataset.period;
+                if (currentChartPeriod === 'weekly') weeklyOffset = 0;
+                if (currentChartPeriod === 'monthly') monthlyOffset = 0;
                 updateChart(currentChartPeriod);
             });
         });
