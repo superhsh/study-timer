@@ -536,6 +536,83 @@
             color: var(--text-primary);
         }
 
+        .chart-nav {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .chart-nav.visible { display: flex; }
+
+        .chart-nav-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            background: white;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .chart-nav-btn:hover { background: var(--secondary); color: white; }
+        .chart-nav-btn:disabled { opacity: 0.3; cursor: default; background: white; color: var(--text-secondary); }
+
+        .chart-nav-label {
+            flex: 1;
+            text-align: center;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-slider-wrap {
+            display: none;
+            padding: 0 4px;
+            margin-bottom: 10px;
+        }
+
+        .chart-slider-wrap.visible { display: block; }
+
+        .chart-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .chart-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--secondary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(59,130,246,0.4);
+        }
+
+        .chart-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--secondary);
+            cursor: pointer;
+            border: none;
+        }
+
         .chart-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -568,6 +645,499 @@
         .chart-stat-value.control {
             color: var(--control);
         }
+
+        /* 메모 관련 스타일 */
+        .session-memo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px 4px 10px;
+            margin-top: 2px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .session-memo:hover {
+            background: #f1f5f9;
+        }
+
+        .session-memo .memo-icon {
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .session-memo .memo-text {
+            color: var(--text-primary);
+            font-weight: 400;
+            word-break: break-word;
+        }
+
+        .session-memo .memo-placeholder {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .memo-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .memo-modal-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .memo-modal-content .memo-session-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+        }
+
+        .memo-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            resize: vertical;
+            transition: border-color 0.3s;
+            line-height: 1.6;
+        }
+
+        .memo-textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .memo-textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        /* ===== 카테고리 선택 스타일 ===== */
+        .category-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .category-selector label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            width: 100%;
+            margin-bottom: 2px;
+        }
+
+        .category-chip {
+            padding: 7px 16px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .category-chip:hover { border-color: #94a3b8; }
+        .category-chip.selected { color: white; border-color: transparent; }
+        .category-chip[data-cat="reading"].selected { background: #3b82f6; }
+        .category-chip[data-cat="lecture"].selected { background: #10b981; }
+        .category-chip[data-cat="memorize"].selected { background: #f59e0b; }
+        .category-chip[data-cat="review"].selected { background: #8b5cf6; }
+        .category-chip[data-cat="writing"].selected { background: #06b6d4; }
+
+        .category-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: white;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        .category-badge.reading { background: #3b82f6; }
+        .category-badge.lecture { background: #10b981; }
+        .category-badge.memorize { background: #f59e0b; }
+        .category-badge.review-cat { background: #8b5cf6; }
+        .category-badge.writing { background: #06b6d4; }
+
+        /* ===== 복습 일정 스타일 ===== */
+        .review-section {
+            margin-bottom: 30px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .review-header h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+        }
+
+        .review-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .review-tab {
+            padding: 10px 20px;
+            background: var(--border);
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .review-tab:hover {
+            background: #cbd5e1;
+        }
+
+        .review-tab.active {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .review-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 11px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 6px;
+            line-height: 1;
+        }
+
+        .review-tab.active .review-badge {
+            background: white;
+            color: #f59e0b;
+        }
+
+        .review-list {
+            background: var(--bg-main);
+            border-radius: 15px;
+            padding: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .review-date-group {
+            margin-bottom: 15px;
+        }
+
+        .review-date-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            padding: 6px 12px;
+            background: white;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .review-date-label.today {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .review-date-label.overdue {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .review-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .review-item.patent-law {
+            border-left-color: var(--patent);
+        }
+
+        .review-item.control-engineering {
+            border-left-color: var(--control);
+        }
+
+        .review-item.done {
+            opacity: 0.55;
+            background: #f8fafc;
+        }
+
+        .review-item.done .review-memo {
+            text-decoration: line-through;
+        }
+
+        .review-checkbox {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-top: 2px;
+            background: white;
+        }
+
+        .review-checkbox:hover {
+            border-color: var(--secondary);
+            background: #eff6ff;
+        }
+
+        .review-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .review-checkbox.checked::after {
+            content: '✓';
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .review-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .review-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .review-subject-badge {
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .review-subject-badge.patent-law {
+            background: var(--patent);
+        }
+
+        .review-subject-badge.control-engineering {
+            background: var(--control);
+        }
+
+        .review-interval {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .review-study-date {
+            font-size: 0.78rem;
+            color: #94a3b8;
+        }
+
+        .review-memo {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .review-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .review-empty .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .review-empty p {
+            font-size: 0.95rem;
+        }
+
+        .review-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .review-progress-bar {
+            flex: 1;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .review-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #34d399);
+            border-radius: 5px;
+            transition: width 0.4s ease;
+        }
+
+        .review-progress-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .review-delete-btn {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-top: 2px;
+        }
+
+        .review-delete-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* ===== 세션 수정 스타일 ===== */
+        .session-row {
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+        }
+
+        .session-row .subject-time {
+            flex: 1;
+            border-bottom: none;
+        }
+
+        .session-edit-btn {
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .session-edit-btn:hover {
+            background: #e0f2fe;
+            color: var(--secondary);
+        }
+
+        .edit-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 520px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .edit-modal-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .edit-modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .edit-modal-buttons .modal-btn {
+            flex: 1;
+        }
+
+        .modal-btn.delete {
+            background: var(--danger);
+            color: white;
+            flex: 0.7;
+        }
+
+        .modal-btn.delete:hover {
+            background: #dc2626;
+        }
+
+        .edit-subject-display {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 18px;
+        }
+
+        .edit-subject-display.patent-law { background: var(--patent); }
+        .edit-subject-display.control-engineering { background: var(--control); }
     </style>
 </head>
 <body>
@@ -625,24 +1195,49 @@
                 <!-- 그래프 섹션 -->
                 <div class="chart-section">
                     <div class="chart-tabs">
-                        <button class="chart-tab active" data-period="week">주간 통계</button>
-                        <button class="chart-tab" data-period="month">월간 통계</button>
+                        <button class="chart-tab active" data-period="daily">시간대별 통계</button>
+                        <button class="chart-tab" data-period="weekly">일별 통계</button>
+                        <button class="chart-tab" data-period="monthly">주별 통계</button>
                     </div>
                     
                     <div class="chart-container">
-                        <div class="chart-title">📈 과목별 일일 공부시간</div>
+                        <div class="chart-title" id="chartTitle">📈 시간대별 평균 공부시간</div>
+                        <div class="chart-nav" id="chartNav">
+                            <button class="chart-nav-btn" id="chartNavPrev">◀</button>
+                            <div class="chart-nav-label" id="chartNavLabel"></div>
+                            <button class="chart-nav-btn" id="chartNavNext">▶</button>
+                        </div>
+                        <div class="chart-slider-wrap" id="chartSliderWrap">
+                            <input type="range" class="chart-slider" id="chartSlider" min="0" max="0" value="0">
+                        </div>
                         <canvas id="studyChart"></canvas>
-                        <div class="chart-stats">
+                        <div class="chart-stats" id="chartStatsArea">
                             <div class="chart-stat-item">
-                                <div class="chart-stat-label">특허법 평균</div>
-                                <div class="chart-stat-value patent" id="avgPatent">0분</div>
+                                <div class="chart-stat-label" id="statLabel1">특허법 평균</div>
+                                <div class="chart-stat-value patent" id="statValue1">0분</div>
                             </div>
                             <div class="chart-stat-item">
-                                <div class="chart-stat-label">제어공학 평균</div>
-                                <div class="chart-stat-value control" id="avgControl">0분</div>
+                                <div class="chart-stat-label" id="statLabel2">제어공학 평균</div>
+                                <div class="chart-stat-value control" id="statValue2">0분</div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- 복습 일정 섹션 -->
+                <div class="review-section">
+                    <div class="review-header">
+                        <h3>🔄 복습 일정</h3>
+                    </div>
+
+                    <div class="review-tabs">
+                        <button class="review-tab active" data-review-tab="today">오늘의 복습 <span class="review-badge" id="todayReviewCount" style="display:none;">0</span></button>
+                        <button class="review-tab" data-review-tab="upcoming">다가오는 복습</button>
+                        <button class="review-tab" data-review-tab="all">전체 일정</button>
+                    </div>
+
+                    <div id="reviewProgressArea"></div>
+                    <div class="review-list" id="reviewList"></div>
                 </div>
 
                 <div class="daily-stats">
@@ -673,31 +1268,99 @@
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
             <div class="modal-header">📝 공부시간 수동 입력</div>
-            <form id="manualEntryForm">
+            <div id="manualEntryForm">
                 <div class="form-group">
                     <label for="manualSubject">과목</label>
-                    <select id="manualSubject" required>
+                    <select id="manualSubject">
                         <option value="patent-law">특허법</option>
                         <option value="control-engineering">제어공학</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="manualDate">날짜</label>
-                    <input type="date" id="manualDate" required>
+                    <input type="date" id="manualDate">
                 </div>
                 <div class="form-group">
                     <label for="manualStartTime">시작 시간</label>
-                    <input type="time" id="manualStartTime" required>
+                    <input type="time" id="manualStartTime">
                 </div>
                 <div class="form-group">
                     <label for="manualEndTime">종료 시간</label>
-                    <input type="time" id="manualEndTime" required>
+                    <input type="time" id="manualEndTime">
+                </div>
+                <div class="form-group">
+                    <label for="manualMemo">학습 내용 (선택)</label>
+                    <div class="category-selector" id="manualCategorySelector">
+                        <div class="category-chip" data-cat="reading">회독</div>
+                        <div class="category-chip" data-cat="lecture">수강</div>
+                        <div class="category-chip" data-cat="memorize">암기</div>
+                        <div class="category-chip" data-cat="review">복습</div>
+                        <div class="category-chip" data-cat="writing">쓰기</div>
+                    </div>
+                    <textarea id="manualMemo" class="memo-textarea" placeholder="예: 특허법 제29조 신규성, 진보성 판례 정리..." rows="3" style="min-height:70px;"></textarea>
                 </div>
                 <div class="modal-buttons">
                     <button type="button" class="modal-btn cancel" id="modalCancelBtn">취소</button>
-                    <button type="submit" class="modal-btn submit">저장</button>
+                    <button type="button" class="modal-btn submit" id="manualSaveBtn">저장</button>
                 </div>
-            </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메모 입력/수정 모달 -->
+    <div class="modal-overlay" id="memoModalOverlay">
+        <div class="memo-modal-content">
+            <h3>📝 학습 내용 기록</h3>
+            <div class="memo-session-info" id="memoSessionInfo"></div>
+            <div class="category-selector" id="memoCategorySelector">
+                <label>카테고리</label>
+                <div class="category-chip" data-cat="reading">회독</div>
+                <div class="category-chip" data-cat="lecture">수강</div>
+                <div class="category-chip" data-cat="memorize">암기</div>
+                <div class="category-chip" data-cat="review">복습</div>
+                <div class="category-chip" data-cat="writing">쓰기</div>
+            </div>
+            <textarea id="memoTextarea" class="memo-textarea" placeholder="어떤 내용을 공부했나요? (예: 특허법 제29조 신규성 요건 정리, 블록선도 문제풀이 등)"></textarea>
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn cancel" id="memoSkipBtn">건너뛰기</button>
+                <button type="button" class="modal-btn submit" id="memoSaveBtn">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 세션 수정 모달 -->
+    <div class="modal-overlay" id="editSessionOverlay">
+        <div class="edit-modal-content">
+            <h3>✏️ 공부 기록 수정</h3>
+            <div class="edit-subject-display" id="editSubjectDisplay"></div>
+            <div class="form-group">
+                <label for="editDate">날짜</label>
+                <input type="date" id="editDate">
+            </div>
+            <div class="form-group">
+                <label for="editStartTime">시작 시간</label>
+                <input type="time" id="editStartTime">
+            </div>
+            <div class="form-group">
+                <label for="editEndTime">종료 시간</label>
+                <input type="time" id="editEndTime">
+            </div>
+            <div class="form-group">
+                <label for="editMemo">학습 내용</label>
+                <div class="category-selector" id="editCategorySelector">
+                    <div class="category-chip" data-cat="reading">회독</div>
+                    <div class="category-chip" data-cat="lecture">수강</div>
+                    <div class="category-chip" data-cat="memorize">암기</div>
+                    <div class="category-chip" data-cat="review">복습</div>
+                    <div class="category-chip" data-cat="writing">쓰기</div>
+                </div>
+                <textarea id="editMemo" class="memo-textarea" placeholder="학습 내용을 입력하세요..." style="min-height:70px;"></textarea>
+            </div>
+            <div class="edit-modal-buttons">
+                <button type="button" class="modal-btn delete" id="editDeleteBtn">삭제</button>
+                <button type="button" class="modal-btn cancel" id="editCancelBtn">취소</button>
+                <button type="button" class="modal-btn submit" id="editSaveBtn">저장</button>
+            </div>
         </div>
     </div>
 
@@ -712,6 +1375,50 @@
             'patent-law': '특허법',
             'control-engineering': '제어공학'
         };
+
+        // ===== 카테고리 시스템 =====
+        const CATEGORIES = {
+            'reading': '회독', 'lecture': '수강', 'memorize': '암기',
+            'review': '복습', 'writing': '쓰기'
+        };
+        const REVIEW_CATEGORIES = ['reading', 'memorize']; // 복습 스케줄 생성 대상
+
+        function getCategoryBadge(cat) {
+            if (!cat || !CATEGORIES[cat]) return '';
+            const cls = cat === 'review' ? 'review-cat' : cat;
+            return `<span class="category-badge ${cls}">${CATEGORIES[cat]}</span>`;
+        }
+
+        function initCategoryChips(selectorId) {
+            const container = document.getElementById(selectorId);
+            if (!container) return;
+            container.querySelectorAll('.category-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    container.querySelectorAll('.category-chip').forEach(c => c.classList.remove('selected'));
+                    chip.classList.add('selected');
+                });
+            });
+        }
+
+        function getSelectedCategory(selectorId) {
+            const sel = document.querySelector(`#${selectorId} .category-chip.selected`);
+            return sel ? sel.dataset.cat : '';
+        }
+
+        function setSelectedCategory(selectorId, cat) {
+            const container = document.getElementById(selectorId);
+            if (!container) return;
+            container.querySelectorAll('.category-chip').forEach(c => c.classList.remove('selected'));
+            if (cat) {
+                const chip = container.querySelector(`.category-chip[data-cat="${cat}"]`);
+                if (chip) chip.classList.add('selected');
+            }
+        }
+
+        // 카테고리 칩 이벤트 초기화
+        initCategoryChips('manualCategorySelector');
+        initCategoryChips('memoCategorySelector');
+        initCategoryChips('editCategorySelector');
 
         // 고유한 localStorage 키 사용
         const STORAGE_KEY = 'patentExamStudyTimer_v1';
@@ -729,8 +1436,16 @@
                             parsed[subject].daily[date] = [{
                                 start: new Date(date + 'T00:00:00').getTime(),
                                 end: new Date(date + 'T00:00:00').getTime() + parsed[subject].daily[date],
-                                duration: parsed[subject].daily[date]
+                                duration: parsed[subject].daily[date],
+                                memo: '',
+                                category: ''
                             }];
+                        } else if (Array.isArray(parsed[subject].daily[date])) {
+                            // memo 필드가 없는 세션에 추가
+                            parsed[subject].daily[date].forEach(session => {
+                                if (session.memo === undefined) session.memo = '';
+                                if (session.category === undefined) session.category = '';
+                            });
                         }
                     });
                 });
@@ -786,8 +1501,8 @@
             isRunning = false;
             clearInterval(timerInterval);
             
-            // 데이터 저장
-            saveSession();
+            // 데이터 저장 (메모 없이 우선 저장)
+            const savedInfo = saveSession();
             
             // 타이머 초기화
             elapsedTime = 0;
@@ -799,6 +1514,11 @@
             
             updateSessionInfo();
             updateStats();
+
+            // 메모 입력 모달 표시
+            if (savedInfo) {
+                showMemoModal(savedInfo.subject, savedInfo.date, savedInfo.sessionIndex, savedInfo.startTimeStr, savedInfo.endTimeStr);
+            }
         });
 
         // 타이머 업데이트
@@ -829,7 +1549,7 @@
 
         // 세션 저장
         function saveSession() {
-            if (elapsedTime < 1000) return; // 1초 미만은 저장하지 않음
+            if (elapsedTime < 1000) return null; // 1초 미만은 저장하지 않음
             
             const data = loadData();
             const now = Date.now();
@@ -846,10 +1566,25 @@
             data[currentSubject].daily[today].push({
                 start: sessionStart,
                 end: now,
-                duration: elapsedTime
+                duration: elapsedTime,
+                memo: '',
+                category: ''
             });
             
+            const sessionIndex = data[currentSubject].daily[today].length - 1;
+            
             saveData(data);
+
+            const startTimeStr = new Date(sessionStart).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+            const endTimeStr = new Date(now).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+            return {
+                subject: currentSubject,
+                date: today,
+                sessionIndex: sessionIndex,
+                startTimeStr: startTimeStr,
+                endTimeStr: endTimeStr
+            };
         }
 
         // 세션 정보 업데이트
@@ -858,6 +1593,552 @@
             const statusText = isRunning ? '⏱️ 측정 중...' : '대기 중';
             document.getElementById('sessionInfo').textContent = `${subjectName} | ${statusText}`;
         }
+
+        // ===== 메모 모달 관련 =====
+        const memoModalOverlay = document.getElementById('memoModalOverlay');
+        const memoTextarea = document.getElementById('memoTextarea');
+        const memoSaveBtn = document.getElementById('memoSaveBtn');
+        const memoSkipBtn = document.getElementById('memoSkipBtn');
+        let pendingMemo = null; // { subject, date, sessionIndex }
+
+        function showMemoModal(subject, date, sessionIndex, startStr, endStr) {
+            pendingMemo = { subject, date, sessionIndex };
+            document.getElementById('memoSessionInfo').textContent = 
+                `${subjectNames[subject]} | ${startStr} ~ ${endStr}`;
+            memoTextarea.value = '';
+            setSelectedCategory('memoCategorySelector', '');
+            memoModalOverlay.classList.add('active');
+            setTimeout(() => memoTextarea.focus(), 100);
+        }
+
+        memoSaveBtn.addEventListener('click', () => {
+            if (pendingMemo) {
+                const memo = memoTextarea.value.trim();
+                const category = getSelectedCategory('memoCategorySelector');
+                if (memo || category) {
+                    saveMemoToSession(pendingMemo.subject, pendingMemo.date, pendingMemo.sessionIndex, memo, category);
+                }
+            }
+            closeMemoModal();
+        });
+
+        memoSkipBtn.addEventListener('click', () => {
+            closeMemoModal();
+        });
+
+        memoModalOverlay.addEventListener('click', (e) => {
+            if (e.target === memoModalOverlay) {
+                closeMemoModal();
+            }
+        });
+
+        function closeMemoModal() {
+            memoModalOverlay.classList.remove('active');
+            memoTextarea.value = '';
+            setSelectedCategory('memoCategorySelector', '');
+            pendingMemo = null;
+        }
+
+        function saveMemoToSession(subject, date, sessionIndex, memo, category) {
+            const data = loadData();
+            if (data[subject] && data[subject].daily[date] && data[subject].daily[date][sessionIndex] !== undefined) {
+                data[subject].daily[date][sessionIndex].memo = memo;
+                if (category !== undefined) data[subject].daily[date][sessionIndex].category = category;
+                saveData(data);
+                const session = data[subject].daily[date][sessionIndex];
+                const cat = session.category || '';
+                // 회독/암기만 복습 일정 생성
+                if (memo && REVIEW_CATEGORIES.includes(cat)) {
+                    createOrUpdateReview(subject, date, session.start, memo, cat);
+                } else {
+                    removeReview(subject, session.start);
+                }
+                updateStats();
+            }
+        }
+
+        // 기존 세션 메모 수정 (날짜별 로그에서 호출)
+        function editMemo(subject, date, sessionIndex) {
+            const data = loadData();
+            const session = data[subject]?.daily[date]?.[sessionIndex];
+            if (!session) return;
+
+            const startStr = new Date(session.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+            const endStr = new Date(session.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+            pendingMemo = { subject, date, sessionIndex };
+            document.getElementById('memoSessionInfo').textContent = 
+                `${subjectNames[subject]} | ${startStr} ~ ${endStr}`;
+            memoTextarea.value = session.memo || '';
+            setSelectedCategory('memoCategorySelector', session.category || '');
+            memoModalOverlay.classList.add('active');
+            setTimeout(() => memoTextarea.focus(), 100);
+        }
+
+        // ===== 복습 일정 시스템 =====
+        const REVIEW_KEY = 'patentExamStudyTimer_reviews_v1';
+        const REVIEW_INTERVALS = [1, 4, 7, 14, 30]; // 에빙하우스 망각곡선 기반
+        const INTERVAL_LABELS = { 1: '1일 후', 4: '4일 후', 7: '7일 후', 14: '2주 후', 30: '1달 후' };
+        let currentReviewTab = 'today';
+
+        function loadReviews() {
+            const data = localStorage.getItem(REVIEW_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveReviews(reviews) {
+            localStorage.setItem(REVIEW_KEY, JSON.stringify(reviews));
+        }
+
+        function getReviewId(subject, sessionStart) {
+            return `${subject}_${sessionStart}`;
+        }
+
+        function addDays(dateStr, days) {
+            const d = new Date(dateStr + 'T00:00:00');
+            d.setDate(d.getDate() + days);
+            return d.toISOString().split('T')[0];
+        }
+
+        function getTodayStr() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function createOrUpdateReview(subject, studyDate, sessionStart, memo, category) {
+            if (!memo || !memo.trim()) {
+                removeReview(subject, sessionStart);
+                return;
+            }
+
+            const reviews = loadReviews();
+            const id = getReviewId(subject, sessionStart);
+            const existingIdx = reviews.findIndex(r => r.id === id);
+
+            const schedule = REVIEW_INTERVALS.map(interval => ({
+                date: addDays(studyDate, interval),
+                interval: interval,
+                done: false
+            }));
+
+            if (existingIdx >= 0) {
+                // 기존 복습 업데이트 (완료 상태 유지)
+                const old = reviews[existingIdx];
+                schedule.forEach(s => {
+                    const oldItem = old.schedule.find(os => os.interval === s.interval);
+                    if (oldItem) s.done = oldItem.done;
+                });
+                reviews[existingIdx] = { id, subject, memo: memo.trim(), category: category || '', studyDate, sessionStart, schedule };
+            } else {
+                reviews.push({ id, subject, memo: memo.trim(), category: category || '', studyDate, sessionStart, schedule });
+            }
+
+            saveReviews(reviews);
+            updateReviewUI();
+        }
+
+        function removeReview(subject, sessionStart) {
+            const reviews = loadReviews();
+            const id = getReviewId(subject, sessionStart);
+            const filtered = reviews.filter(r => r.id !== id);
+            saveReviews(filtered);
+            updateReviewUI();
+        }
+
+        function toggleReviewDone(reviewId, intervalIdx) {
+            const reviews = loadReviews();
+            const review = reviews.find(r => r.id === reviewId);
+            if (review && review.schedule[intervalIdx]) {
+                review.schedule[intervalIdx].done = !review.schedule[intervalIdx].done;
+                saveReviews(reviews);
+                updateReviewUI();
+            }
+        }
+
+        function deleteReview(reviewId) {
+            if (!confirm('이 학습 내용의 복습 일정을 삭제하시겠습니까?')) return;
+            const reviews = loadReviews().filter(r => r.id !== reviewId);
+            saveReviews(reviews);
+            updateReviewUI();
+        }
+
+        function formatDateKR(dateStr) {
+            const d = new Date(dateStr + 'T00:00:00');
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            const weekday = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+            return `${month}월 ${day}일 (${weekday})`;
+        }
+
+        function updateReviewUI() {
+            const reviews = loadReviews();
+            const today = getTodayStr();
+            const reviewList = document.getElementById('reviewList');
+            const progressArea = document.getElementById('reviewProgressArea');
+
+            // 오늘 복습 개수 배지
+            let todayTotal = 0, todayDone = 0;
+            reviews.forEach(r => {
+                r.schedule.forEach(s => {
+                    if (s.date === today) { todayTotal++; if (s.done) todayDone++; }
+                });
+            });
+            const badge = document.getElementById('todayReviewCount');
+            const pending = todayTotal - todayDone;
+            if (pending > 0) {
+                badge.textContent = pending;
+                badge.style.display = 'inline-flex';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            if (currentReviewTab === 'today') {
+                renderTodayReviews(reviews, today, reviewList, progressArea);
+            } else if (currentReviewTab === 'upcoming') {
+                renderUpcomingReviews(reviews, today, reviewList, progressArea);
+            } else {
+                renderAllReviews(reviews, today, reviewList, progressArea);
+            }
+        }
+
+        function renderTodayReviews(reviews, today, container, progressArea) {
+            // 오늘 + 미완료 지난 복습 포함
+            let items = [];
+            reviews.forEach(r => {
+                r.schedule.forEach((s, idx) => {
+                    if (s.date <= today) {
+                        items.push({ review: r, scheduleItem: s, intervalIdx: idx });
+                    }
+                });
+            });
+
+            // 미완료 우선, 날짜 내림차순
+            items.sort((a, b) => {
+                if (a.scheduleItem.done !== b.scheduleItem.done) return a.scheduleItem.done ? 1 : -1;
+                return a.scheduleItem.date < b.scheduleItem.date ? 1 : -1;
+            });
+
+            const total = items.length;
+            const done = items.filter(i => i.scheduleItem.done).length;
+
+            if (total === 0) {
+                progressArea.innerHTML = '';
+                container.innerHTML = `
+                    <div class="review-empty">
+                        <div class="empty-icon">🎉</div>
+                        <p>오늘 복습할 항목이 없습니다!</p>
+                        <p style="font-size:0.85rem; margin-top:8px; color:#94a3b8;">학습 시 메모를 남기면 자동으로 복습 일정이 생성됩니다</p>
+                    </div>`;
+                return;
+            }
+
+            progressArea.innerHTML = `
+                <div class="review-progress">
+                    <div class="review-progress-bar">
+                        <div class="review-progress-fill" style="width: ${Math.round(done/total*100)}%"></div>
+                    </div>
+                    <span class="review-progress-text">${done}/${total} 완료</span>
+                </div>`;
+
+            let html = '';
+            let currentGroup = '';
+            items.forEach(({ review, scheduleItem, intervalIdx }) => {
+                const isOverdue = scheduleItem.date < today && !scheduleItem.done;
+                const groupLabel = scheduleItem.date === today ? '오늘' : (isOverdue ? `${formatDateKR(scheduleItem.date)} (밀림)` : formatDateKR(scheduleItem.date));
+                
+                if (groupLabel !== currentGroup) {
+                    currentGroup = groupLabel;
+                    const labelClass = scheduleItem.date === today ? 'today' : (isOverdue ? 'overdue' : '');
+                    html += `<div class="review-date-group"><div class="review-date-label ${labelClass}">${groupLabel}</div></div>`;
+                }
+
+                html += renderReviewItem(review, scheduleItem, intervalIdx);
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderUpcomingReviews(reviews, today, container, progressArea) {
+            progressArea.innerHTML = '';
+            let items = [];
+            const maxDate = addDays(today, 30);
+            reviews.forEach(r => {
+                r.schedule.forEach((s, idx) => {
+                    if (s.date > today && s.date <= maxDate && !s.done) {
+                        items.push({ review: r, scheduleItem: s, intervalIdx: idx });
+                    }
+                });
+            });
+
+            items.sort((a, b) => a.scheduleItem.date.localeCompare(b.scheduleItem.date));
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="review-empty">
+                        <div class="empty-icon">📅</div>
+                        <p>다가오는 복습 일정이 없습니다</p>
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            let currentDate = '';
+            items.forEach(({ review, scheduleItem, intervalIdx }) => {
+                const dateLabel = formatDateKR(scheduleItem.date);
+                if (dateLabel !== currentDate) {
+                    currentDate = dateLabel;
+                    html += `<div class="review-date-group"><div class="review-date-label">${dateLabel}</div></div>`;
+                }
+                html += renderReviewItem(review, scheduleItem, intervalIdx);
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderAllReviews(reviews, today, container, progressArea) {
+            progressArea.innerHTML = '';
+
+            if (reviews.length === 0) {
+                container.innerHTML = `
+                    <div class="review-empty">
+                        <div class="empty-icon">📚</div>
+                        <p>등록된 복습 일정이 없습니다</p>
+                        <p style="font-size:0.85rem; margin-top:8px; color:#94a3b8;">학습 시 메모를 남기면 자동으로 복습 일정이 생성됩니다</p>
+                    </div>`;
+                return;
+            }
+
+            // 학습 내용별로 그룹핑 (최신순)
+            const sorted = [...reviews].sort((a, b) => b.studyDate.localeCompare(a.studyDate));
+
+            let html = '';
+            sorted.forEach(review => {
+                const subjectClass = review.subject;
+                const subjectLabel = subjectNames[review.subject] || review.subject;
+                const total = review.schedule.length;
+                const done = review.schedule.filter(s => s.done).length;
+                const pct = Math.round(done / total * 100);
+
+                html += `<div style="background:white; border-radius:12px; padding:16px; margin-bottom:12px; border-left:4px solid ${review.subject === 'patent-law' ? 'var(--patent)' : 'var(--control)'};">`;
+                html += `<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">`;
+                html += `<div style="flex:1;">`;
+                html += `<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">`;
+                html += `<span class="review-subject-badge ${subjectClass}">${subjectLabel}</span>`;
+                html += `<span style="font-size:0.8rem; color:#94a3b8;">학습일: ${formatDateKR(review.studyDate)}</span>`;
+                html += `</div>`;
+                html += `<div style="font-size:0.95rem; color:var(--text-primary); line-height:1.5;">${getCategoryBadge(review.category)}${review.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                html += `</div>`;
+                html += `<button class="review-delete-btn" onclick="deleteReview('${review.id}')" title="삭제">🗑</button>`;
+                html += `</div>`;
+
+                // 진행률 바
+                html += `<div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">`;
+                html += `<div style="flex:1; height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">`;
+                html += `<div style="width:${pct}%; height:100%; background:var(--success); border-radius:3px; transition:width 0.3s;"></div>`;
+                html += `</div>`;
+                html += `<span style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">${done}/${total}</span>`;
+                html += `</div>`;
+
+                // 각 복습 단계
+                html += `<div style="display:flex; gap:6px; flex-wrap:wrap;">`;
+                review.schedule.forEach((s, idx) => {
+                    const isDone = s.done;
+                    const isPast = s.date <= today;
+                    const isToday = s.date === today;
+                    let bgColor = '#f1f5f9';
+                    let textColor = 'var(--text-secondary)';
+                    if (isDone) { bgColor = '#d1fae5'; textColor = '#065f46'; }
+                    else if (isToday) { bgColor = '#fef3c7'; textColor = '#92400e'; }
+                    else if (isPast) { bgColor = '#fee2e2'; textColor = '#991b1b'; }
+
+                    html += `<div onclick="toggleReviewDone('${review.id}',${idx})" 
+                        style="padding:5px 10px; border-radius:6px; font-size:0.78rem; font-weight:600; cursor:pointer; 
+                        background:${bgColor}; color:${textColor}; transition:all 0.2s; user-select:none;">
+                        ${isDone ? '✓ ' : ''}${INTERVAL_LABELS[s.interval]}
+                    </div>`;
+                });
+                html += `</div>`;
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderReviewItem(review, scheduleItem, intervalIdx) {
+            const subjectClass = review.subject;
+            const subjectLabel = subjectNames[review.subject] || review.subject;
+            const doneClass = scheduleItem.done ? 'done' : '';
+            const checkedClass = scheduleItem.done ? 'checked' : '';
+
+            return `
+                <div class="review-item ${subjectClass} ${doneClass}">
+                    <div class="review-checkbox ${checkedClass}" onclick="toggleReviewDone('${review.id}', ${intervalIdx})"></div>
+                    <div class="review-content">
+                        <div class="review-meta">
+                            <span class="review-subject-badge ${subjectClass}">${subjectLabel}</span>
+                            <span class="review-interval">${INTERVAL_LABELS[scheduleItem.interval]}</span>
+                            <span class="review-study-date">학습일: ${formatDateKR(review.studyDate)}</span>
+                        </div>
+                        <div class="review-memo">${getCategoryBadge(review.category)}${review.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+                    </div>
+                    <button class="review-delete-btn" onclick="deleteReview('${review.id}')" title="삭제">🗑</button>
+                </div>
+            `;
+        }
+
+        // 복습 탭 전환
+        document.querySelectorAll('.review-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.review-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentReviewTab = tab.dataset.reviewTab;
+                updateReviewUI();
+            });
+        });
+
+        // ===== 복습 일정 시스템 끝 =====
+
+        // ===== 세션 수정/삭제 시스템 =====
+        const editSessionOverlay = document.getElementById('editSessionOverlay');
+        let editingSession = null; // { subject, date, index, originalStart }
+
+        function openEditSession(subject, date, index) {
+            const data = loadData();
+            const session = data[subject]?.daily[date]?.[index];
+            if (!session) return;
+
+            editingSession = { subject, date, index, originalStart: session.start };
+
+            // 과목 표시
+            const display = document.getElementById('editSubjectDisplay');
+            display.textContent = subjectNames[subject];
+            display.className = 'edit-subject-display ' + subject;
+
+            // 날짜
+            document.getElementById('editDate').value = date;
+
+            // 시작/종료 시간 (HH:MM 형식으로 변환)
+            const startD = new Date(session.start);
+            const endD = new Date(session.end);
+            document.getElementById('editStartTime').value = 
+                String(startD.getHours()).padStart(2,'0') + ':' + String(startD.getMinutes()).padStart(2,'0');
+            document.getElementById('editEndTime').value = 
+                String(endD.getHours()).padStart(2,'0') + ':' + String(endD.getMinutes()).padStart(2,'0');
+
+            // 메모
+            document.getElementById('editMemo').value = session.memo || '';
+            setSelectedCategory('editCategorySelector', session.category || '');
+
+            editSessionOverlay.classList.add('active');
+        }
+
+        // 저장
+        document.getElementById('editSaveBtn').addEventListener('click', () => {
+            if (!editingSession) return;
+
+            const newDate = document.getElementById('editDate').value;
+            const sTime = document.getElementById('editStartTime').value;
+            const eTime = document.getElementById('editEndTime').value;
+            const newMemo = document.getElementById('editMemo').value.trim();
+            const newCategory = getSelectedCategory('editCategorySelector');
+
+            if (!newDate || !sTime || !eTime) {
+                alert('날짜, 시작 시간, 종료 시간을 모두 입력해주세요.');
+                return;
+            }
+
+            const [year, month, day] = newDate.split('-').map(Number);
+            const [sh, sm] = sTime.split(':').map(Number);
+            const [eh, em] = eTime.split(':').map(Number);
+
+            const newStart = new Date(year, month - 1, day, sh, sm, 0, 0);
+            const newEnd = new Date(year, month - 1, day, eh, em, 0, 0);
+
+            if (isNaN(newStart.getTime()) || isNaN(newEnd.getTime())) {
+                alert('올바른 날짜와 시간을 입력해주세요.');
+                return;
+            }
+            if (newEnd <= newStart) {
+                alert('종료 시간은 시작 시간보다 늦어야 합니다.');
+                return;
+            }
+
+            const { subject, date: oldDate, index, originalStart } = editingSession;
+            const data = loadData();
+            const oldSession = data[subject]?.daily[oldDate]?.[index];
+            if (!oldSession) { alert('세션을 찾을 수 없습니다.'); return; }
+
+            const oldDuration = oldSession.duration;
+            const newDuration = newEnd.getTime() - newStart.getTime();
+
+            // 기존 세션 제거
+            data[subject].daily[oldDate].splice(index, 1);
+            data[subject].total -= oldDuration;
+            if (data[subject].daily[oldDate].length === 0) {
+                delete data[subject].daily[oldDate];
+            }
+
+            // 새 세션 추가
+            if (!data[subject].daily[newDate]) {
+                data[subject].daily[newDate] = [];
+            }
+            data[subject].daily[newDate].push({
+                start: newStart.getTime(),
+                end: newEnd.getTime(),
+                duration: newDuration,
+                memo: newMemo,
+                category: newCategory
+            });
+            data[subject].daily[newDate].sort((a, b) => a.start - b.start);
+            data[subject].total += newDuration;
+
+            saveData(data);
+
+            // 복습 일정 업데이트
+            removeReview(subject, originalStart);
+            if (newMemo && REVIEW_CATEGORIES.includes(newCategory)) {
+                createOrUpdateReview(subject, newDate, newStart.getTime(), newMemo, newCategory);
+            }
+
+            closeEditSession();
+            updateStats();
+            alert('공부 기록이 수정되었습니다.');
+        });
+
+        // 삭제
+        document.getElementById('editDeleteBtn').addEventListener('click', () => {
+            if (!editingSession) return;
+            if (!confirm('이 공부 기록을 삭제하시겠습니까?\n삭제하면 복구할 수 없습니다.')) return;
+
+            const { subject, date, index, originalStart } = editingSession;
+            const data = loadData();
+            const session = data[subject]?.daily[date]?.[index];
+            if (!session) return;
+
+            data[subject].total -= session.duration;
+            data[subject].daily[date].splice(index, 1);
+            if (data[subject].daily[date].length === 0) {
+                delete data[subject].daily[date];
+            }
+
+            saveData(data);
+            removeReview(subject, originalStart);
+
+            closeEditSession();
+            updateStats();
+            alert('공부 기록이 삭제되었습니다.');
+        });
+
+        // 취소
+        document.getElementById('editCancelBtn').addEventListener('click', closeEditSession);
+        editSessionOverlay.addEventListener('click', (e) => {
+            if (e.target === editSessionOverlay) closeEditSession();
+        });
+
+        function closeEditSession() {
+            editSessionOverlay.classList.remove('active');
+            editingSession = null;
+        }
+        // ===== 세션 수정/삭제 시스템 끝 =====
 
         // 통계 업데이트
         function updateStats() {
@@ -874,6 +2155,9 @@
             if (studyChart) {
                 updateChart(currentChartPeriod);
             }
+
+            // 복습 UI 업데이트
+            updateReviewUI();
         }
 
         // 날짜별 로그 업데이트
@@ -915,11 +2199,23 @@
                         const startTime = new Date(session.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const endTime = new Date(session.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const duration = formatTimeToHM(session.duration);
+                        const memo = session.memo || '';
+                        const catBadge = getCategoryBadge(session.category);
+                        const memoDisplay = (memo || session.category)
+                            ? `${catBadge}<span class="memo-text">${memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`
+                            : `<span class="memo-placeholder">+ 학습 내용 추가</span>`;
                         
                         html += `
-                            <div class="subject-time" style="padding-left: 10px;">
-                                <span class="subject-name" style="font-size: 0.9rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
-                                <span class="time-value">${duration}</span>
+                            <div class="session-row">
+                                <div class="subject-time" style="flex:1;">
+                                    <span class="subject-name" style="font-size: 0.9rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
+                                    <span class="time-value">${duration}</span>
+                                </div>
+                                <button class="session-edit-btn" onclick="openEditSession('patent-law','${date}',${idx})" title="수정">✏️</button>
+                            </div>
+                            <div class="session-memo" onclick="editMemo('patent-law','${date}',${idx})">
+                                <span class="memo-icon">📋</span>
+                                ${memoDisplay}
                             </div>
                         `;
                         patentTotal += session.duration;
@@ -944,11 +2240,23 @@
                         const startTime = new Date(session.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const endTime = new Date(session.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const duration = formatTimeToHM(session.duration);
+                        const memo = session.memo || '';
+                        const catBadge = getCategoryBadge(session.category);
+                        const memoDisplay = (memo || session.category)
+                            ? `${catBadge}<span class="memo-text">${memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`
+                            : `<span class="memo-placeholder">+ 학습 내용 추가</span>`;
                         
                         html += `
-                            <div class="subject-time" style="padding-left: 10px;">
-                                <span class="subject-name" style="font-size: 0.9rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
-                                <span class="time-value">${duration}</span>
+                            <div class="session-row">
+                                <div class="subject-time" style="flex:1;">
+                                    <span class="subject-name" style="font-size: 0.9rem;">세션 ${idx + 1}: ${startTime} ~ ${endTime}</span>
+                                    <span class="time-value">${duration}</span>
+                                </div>
+                                <button class="session-edit-btn" onclick="openEditSession('control-engineering','${date}',${idx})" title="수정">✏️</button>
+                            </div>
+                            <div class="session-memo" onclick="editMemo('control-engineering','${date}',${idx})">
+                                <span class="memo-icon">📋</span>
+                                ${memoDisplay}
                             </div>
                         `;
                         controlTotal += session.duration;
@@ -997,6 +2305,15 @@
         const modalCancelBtn = document.getElementById('modalCancelBtn');
         const manualEntryForm = document.getElementById('manualEntryForm');
 
+        function resetManualForm() {
+            document.getElementById('manualSubject').value = 'patent-law';
+            document.getElementById('manualDate').value = '';
+            document.getElementById('manualStartTime').value = '';
+            document.getElementById('manualEndTime').value = '';
+            document.getElementById('manualMemo').value = '';
+            setSelectedCategory('manualCategorySelector', '');
+        }
+
         // 모달 열기
         manualEntryBtn.addEventListener('click', () => {
             const today = new Date().toISOString().split('T')[0];
@@ -1008,41 +2325,39 @@
         // 모달 닫기
         modalCancelBtn.addEventListener('click', () => {
             modalOverlay.classList.remove('active');
-            manualEntryForm.reset();
+            resetManualForm();
         });
 
         // 모달 오버레이 클릭 시 닫기
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) {
                 modalOverlay.classList.remove('active');
-                manualEntryForm.reset();
+                resetManualForm();
             }
         });
 
-        // 수동 입력 폼 제출
-        manualEntryForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            console.log('수동 입력 폼 제출 시작');
+        // 수동 입력 폼 제출 (저장 버튼 클릭)
+        document.getElementById('manualSaveBtn').addEventListener('click', () => {
+            console.log('수동 입력 저장 버튼 클릭');
 
             const subject = document.getElementById('manualSubject').value;
             const date = document.getElementById('manualDate').value;
-            const startTime = document.getElementById('manualStartTime').value;
-            const endTime = document.getElementById('manualEndTime').value;
+            const mStartTime = document.getElementById('manualStartTime').value;
+            const mEndTime = document.getElementById('manualEndTime').value;
 
-            console.log('입력값:', { subject, date, startTime, endTime });
+            console.log('입력값:', { subject, date, mStartTime, mEndTime });
 
             // 입력값 확인
-            if (!subject || !date || !startTime || !endTime) {
-                alert('모든 항목을 입력해주세요.');
+            if (!subject || !date || !mStartTime || !mEndTime) {
+                alert('과목, 날짜, 시작 시간, 종료 시간을 모두 입력해주세요.');
                 return;
             }
 
             try {
                 // 날짜를 YYYY-MM-DD 형식으로 분리
                 const [year, month, day] = date.split('-').map(Number);
-                const [startHour, startMin] = startTime.split(':').map(Number);
-                const [endHour, endMin] = endTime.split(':').map(Number);
+                const [startHour, startMin] = mStartTime.split(':').map(Number);
+                const [endHour, endMin] = mEndTime.split(':').map(Number);
                 
                 console.log('파싱된 값:', { year, month, day, startHour, startMin, endHour, endMin });
                 
@@ -1084,7 +2399,9 @@
                 const session = {
                     start: startDateTime.getTime(),
                     end: endDateTime.getTime(),
-                    duration: duration
+                    duration: duration,
+                    memo: document.getElementById('manualMemo').value.trim(),
+                    category: getSelectedCategory('manualCategorySelector')
                 };
                 
                 console.log('추가할 세션:', session);
@@ -1095,6 +2412,11 @@
 
                 console.log('저장될 데이터:', data);
                 saveData(data);
+
+                // 회독/암기 카테고리 + 메모가 있으면 복습 일정 생성
+                if (session.memo && REVIEW_CATEGORIES.includes(session.category)) {
+                    createOrUpdateReview(subject, date, session.start, session.memo, session.category);
+                }
                 
                 console.log('통계 업데이트 시작');
                 updateStats();
@@ -1103,14 +2425,14 @@
 
                 // 모달 닫기 및 폼 리셋
                 modalOverlay.classList.remove('active');
-                manualEntryForm.reset();
+                resetManualForm();
 
                 const timeStr = formatTimeToHM(duration);
                 alert(`공부시간이 저장되었습니다!\n${subjectNames[subject]}: ${timeStr}`);
                 
             } catch (error) {
                 console.error('수동 입력 저장 중 오류:', error);
-                alert('저장 중 오류가 발생했습니다. 콘솔을 확인해주세요.');
+                alert('저장 중 오류가 발생했습니다:\n' + error.message);
             }
         });
 
@@ -1122,7 +2444,9 @@
         // 데이터 내보내기
         exportBtn.addEventListener('click', () => {
             const data = loadData();
-            const jsonString = JSON.stringify(data, null, 2);
+            const reviews = loadReviews();
+            const exportData = { ...data, _reviews: reviews };
+            const jsonString = JSON.stringify(exportData, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             
@@ -1162,7 +2486,11 @@
                         return;
                     }
 
+                    // 복습 데이터 분리 후 저장
+                    const reviews = importedData._reviews || [];
+                    delete importedData._reviews;
                     saveData(importedData);
+                    saveReviews(reviews);
                     updateStats();
                     alert('데이터를 성공적으로 가져왔습니다!');
                 } catch (error) {
@@ -1174,199 +2502,369 @@
             reader.readAsText(file);
         });
 
-        // 그래프 관련 변수
+        // ===== 그래프 시스템 =====
         let studyChart = null;
-        let currentChartPeriod = 'week';
+        let currentChartPeriod = 'daily';
+        let weeklyOffset = 0;  // 0 = 오늘 포함 최근 7일, 1 = 그 전 7일 ...
+        let monthlyOffset = 0; // 0 = 이번주 포함 최근 4주, 1 = 그 전 4주 ...
 
-        // 그래프 초기화
         function initChart() {
             const ctx = document.getElementById('studyChart').getContext('2d');
             studyChart = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: '특허법',
-                            data: [],
-                            backgroundColor: 'rgba(99, 102, 241, 0.7)',
-                            borderColor: 'rgba(99, 102, 241, 1)',
-                            borderWidth: 2,
-                            borderRadius: 8
-                        },
-                        {
-                            label: '제어공학',
-                            data: [],
-                            backgroundColor: 'rgba(236, 72, 153, 0.7)',
-                            borderColor: 'rgba(236, 72, 153, 1)',
-                            borderWidth: 2,
-                            borderRadius: 8
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 2,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    family: 'Noto Sans KR',
-                                    size: 12,
-                                    weight: '600'
-                                },
-                                padding: 15
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const minutes = Math.round(context.parsed.y);
-                                    const hours = Math.floor(minutes / 60);
-                                    const mins = minutes % 60;
-                                    return `${context.dataset.label}: ${hours}시간 ${mins}분`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '분';
-                                },
-                                font: {
-                                    family: 'Noto Sans KR'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    family: 'Noto Sans KR',
-                                    size: 11
-                                }
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
+                data: { labels: [], datasets: [] },
+                options: getChartOptions()
             });
         }
 
-        // 그래프 데이터 업데이트
+        function getChartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                plugins: {
+                    legend: {
+                        display: true, position: 'top',
+                        labels: { font: { family: 'Noto Sans KR', size: 12, weight: '600' }, padding: 15 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const v = Math.round(ctx.parsed.y);
+                                return `${ctx.dataset.label}: ${Math.floor(v/60)}시간 ${v%60}분`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: v => v >= 60 ? Math.floor(v/60)+'시간' : v+'분',
+                            font: { family: 'Noto Sans KR' }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        ticks: { font: { family: 'Noto Sans KR', size: 11 } },
+                        grid: { display: false }
+                    }
+                }
+            };
+        }
+
+        // 가장 오래된 기록 날짜
+        function getEarliestDate(data) {
+            let earliest = null;
+            ['patent-law', 'control-engineering'].forEach(subj => {
+                Object.keys(data[subj].daily).forEach(d => {
+                    if (!earliest || d < earliest) earliest = d;
+                });
+            });
+            return earliest;
+        }
+
+        function getMaxWeeklyOffset(data) {
+            const earliest = getEarliestDate(data);
+            if (!earliest) return 0;
+            const today = new Date();
+            const earlyDate = new Date(earliest);
+            const diffDays = Math.floor((today - earlyDate) / 86400000);
+            return Math.max(0, Math.floor(diffDays / 7));
+        }
+
+        function getMaxMonthlyOffset(data) {
+            const earliest = getEarliestDate(data);
+            if (!earliest) return 0;
+            const today = new Date();
+            const earlyDate = new Date(earliest);
+            const diffDays = Math.floor((today - earlyDate) / 86400000);
+            return Math.max(0, Math.floor(diffDays / 28));
+        }
+
+        // 네비게이터 UI
+        const chartNav = document.getElementById('chartNav');
+        const chartNavLabel = document.getElementById('chartNavLabel');
+        const chartNavPrev = document.getElementById('chartNavPrev');
+        const chartNavNext = document.getElementById('chartNavNext');
+        const chartSliderWrap = document.getElementById('chartSliderWrap');
+        const chartSlider = document.getElementById('chartSlider');
+
+        function showNav(show) {
+            chartNav.classList.toggle('visible', show);
+            chartSliderWrap.classList.toggle('visible', show);
+        }
+
+        function updateNavUI(offset, maxOffset, labelText) {
+            chartNavLabel.textContent = labelText;
+            chartNavPrev.disabled = (offset >= maxOffset);
+            chartNavNext.disabled = (offset <= 0);
+            chartSlider.min = 0;
+            chartSlider.max = maxOffset;
+            chartSlider.value = maxOffset - offset; // 오른쪽 = 최신
+        }
+
+        chartNavPrev.addEventListener('click', () => {
+            if (currentChartPeriod === 'weekly') {
+                weeklyOffset++;
+            } else if (currentChartPeriod === 'monthly') {
+                monthlyOffset++;
+            }
+            updateChart(currentChartPeriod);
+        });
+
+        chartNavNext.addEventListener('click', () => {
+            if (currentChartPeriod === 'weekly') {
+                weeklyOffset = Math.max(0, weeklyOffset - 1);
+            } else if (currentChartPeriod === 'monthly') {
+                monthlyOffset = Math.max(0, monthlyOffset - 1);
+            }
+            updateChart(currentChartPeriod);
+        });
+
+        chartSlider.addEventListener('input', () => {
+            const maxOff = parseInt(chartSlider.max);
+            const newOffset = maxOff - parseInt(chartSlider.value);
+            if (currentChartPeriod === 'weekly') {
+                weeklyOffset = newOffset;
+            } else if (currentChartPeriod === 'monthly') {
+                monthlyOffset = newOffset;
+            }
+            updateChart(currentChartPeriod);
+        });
+
         function updateChart(period) {
             const data = loadData();
-            const dates = getDateRange(period);
+            if (period === 'daily') updateDailyChart(data);
+            else if (period === 'weekly') updateWeeklyChart(data);
+            else updateMonthlyChart(data);
+        }
+
+        // ── 시간대별 통계 ──
+        function updateDailyChart(data) {
+            showNav(false);
+            document.getElementById('chartTitle').textContent = '📈 시간대별 평균 공부시간';
+            const hourBuckets = {};
+
+            ['patent-law', 'control-engineering'].forEach(subject => {
+                Object.values(data[subject].daily).forEach(sessions => {
+                    sessions.forEach(s => {
+                        const start = new Date(s.start);
+                        const end = new Date(s.end);
+                        let cur = new Date(start);
+                        while (cur < end) {
+                            const h = cur.getHours();
+                            const nextHour = new Date(cur);
+                            nextHour.setHours(h + 1, 0, 0, 0);
+                            const sliceEnd = nextHour < end ? nextHour : end;
+                            const mins = (sliceEnd - cur) / 60000;
+                            if (!hourBuckets[h]) hourBuckets[h] = { patent: [], control: [] };
+                            const key = subject === 'patent-law' ? 'patent' : 'control';
+                            hourBuckets[h][key].push(mins);
+                            cur = nextHour;
+                        }
+                    });
+                });
+            });
+
+            const hours = Object.keys(hourBuckets).map(Number).sort((a, b) => a - b);
+            if (hours.length === 0) {
+                setEmptyChart('공부 기록이 없습니다');
+                return;
+            }
+
+            const allDates = new Set();
+            ['patent-law', 'control-engineering'].forEach(subj => {
+                Object.keys(data[subj].daily).forEach(d => allDates.add(d));
+            });
+            const totalDays = Math.max(allDates.size, 1);
+
+            const labels = hours.map(h => `${h}시`);
+            const patentAvgs = hours.map(h => Math.round(hourBuckets[h].patent.reduce((a, b) => a + b, 0) / totalDays));
+            const controlAvgs = hours.map(h => Math.round(hourBuckets[h].control.reduce((a, b) => a + b, 0) / totalDays));
+
+            studyChart.data.labels = labels;
+            studyChart.data.datasets = [
+                { label: '특허법', data: patentAvgs, backgroundColor: 'rgba(99,102,241,0.7)', borderColor: 'rgba(99,102,241,1)', borderWidth: 2, borderRadius: 6 },
+                { label: '제어공학', data: controlAvgs, backgroundColor: 'rgba(236,72,153,0.7)', borderColor: 'rgba(236,72,153,1)', borderWidth: 2, borderRadius: 6 }
+            ];
+            studyChart.config.type = 'bar';
+            studyChart.options = getChartOptions();
+            studyChart.update();
+
+            const combined = hours.map(h => ({ h, total: patentAvgs[hours.indexOf(h)] + controlAvgs[hours.indexOf(h)] }));
+            combined.sort((a, b) => b.total - a.total);
+            const peak = combined[0];
+
+            document.getElementById('statLabel1').textContent = '가장 많이 공부한 시간대';
+            document.getElementById('statValue1').textContent = peak ? `${peak.h}시 ~ ${peak.h+1}시` : '-';
+            document.getElementById('statValue1').className = 'chart-stat-value patent';
+            document.getElementById('statLabel2').textContent = '일평균 총 공부시간';
+            const totalAllMinutes = [...Object.values(hourBuckets)].reduce((sum, b) => 
+                sum + b.patent.reduce((a,v)=>a+v,0) + b.control.reduce((a,v)=>a+v,0), 0);
+            document.getElementById('statValue2').textContent = formatMinutes(Math.round(totalAllMinutes / totalDays));
+            document.getElementById('statValue2').className = 'chart-stat-value control';
+        }
+
+        // ── 일별 통계: 오늘 포함 과거 7일, 슬라이더로 이전 주 ──
+        function updateWeeklyChart(data) {
+            showNav(true);
+            const maxOff = getMaxWeeklyOffset(data);
+            if (weeklyOffset > maxOff) weeklyOffset = maxOff;
+
+            const today = new Date();
+            const endDate = new Date(today);
+            endDate.setDate(today.getDate() - weeklyOffset * 7);
+            const startDate = new Date(endDate);
+            startDate.setDate(endDate.getDate() - 6);
+
+            const startLabel = `${startDate.getMonth()+1}/${startDate.getDate()}`;
+            const endLabel = `${endDate.getMonth()+1}/${endDate.getDate()}`;
+            const navLabel = weeklyOffset === 0 ? `${startLabel} ~ 오늘` : `${startLabel} ~ ${endLabel}`;
+            document.getElementById('chartTitle').textContent = '📈 일별 공부시간';
+            updateNavUI(weeklyOffset, maxOff, navLabel);
+
+            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
             const labels = [];
             const patentData = [];
             const controlData = [];
 
-            dates.forEach(date => {
-                // 라벨 생성
-                const dateObj = new Date(date);
-                if (period === 'week') {
-                    const weekday = ['일', '월', '화', '수', '목', '금', '토'][dateObj.getDay()];
-                    labels.push(`${dateObj.getMonth() + 1}/${dateObj.getDate()}(${weekday})`);
-                } else {
-                    labels.push(`${dateObj.getMonth() + 1}/${dateObj.getDate()}`);
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(startDate);
+                d.setDate(startDate.getDate() + i);
+                const dateStr = d.toISOString().split('T')[0];
+                labels.push(`${d.getMonth()+1}/${d.getDate()}(${dayNames[d.getDay()]})`);
+
+                let pm = 0, cm = 0;
+                if (data['patent-law'].daily[dateStr]) {
+                    pm = Math.round(data['patent-law'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0) / 60000);
                 }
-
-                // 데이터 수집 (분 단위로 변환)
-                let patentMinutes = 0;
-                let controlMinutes = 0;
-
-                if (data['patent-law'].daily[date]) {
-                    const sessions = data['patent-law'].daily[date];
-                    const totalMs = sessions.reduce((sum, session) => sum + session.duration, 0);
-                    patentMinutes = Math.round(totalMs / 60000);
+                if (data['control-engineering'].daily[dateStr]) {
+                    cm = Math.round(data['control-engineering'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0) / 60000);
                 }
+                patentData.push(pm);
+                controlData.push(cm);
+            }
 
-                if (data['control-engineering'].daily[date]) {
-                    const sessions = data['control-engineering'].daily[date];
-                    const totalMs = sessions.reduce((sum, session) => sum + session.duration, 0);
-                    controlMinutes = Math.round(totalMs / 60000);
+            const totalPerDay = patentData.map((p, i) => p + controlData[i]);
+            const avgMinutes = Math.round(totalPerDay.reduce((a, b) => a + b, 0) / 7);
+            const avgLine = new Array(7).fill(avgMinutes);
+
+            studyChart.data.labels = labels;
+            studyChart.data.datasets = [
+                { label: '특허법', data: patentData, backgroundColor: 'rgba(99,102,241,0.7)', borderColor: 'rgba(99,102,241,1)', borderWidth: 2, borderRadius: 8, order: 2 },
+                { label: '제어공학', data: controlData, backgroundColor: 'rgba(236,72,153,0.7)', borderColor: 'rgba(236,72,153,1)', borderWidth: 2, borderRadius: 8, order: 2 },
+                { label: '일평균', data: avgLine, type: 'line', borderColor: 'rgba(251,191,36,1)', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6, 4], pointRadius: 0, order: 1 }
+            ];
+            studyChart.config.type = 'bar';
+            studyChart.options = getChartOptions();
+            studyChart.update();
+
+            const weekTotal = totalPerDay.reduce((a, b) => a + b, 0);
+            document.getElementById('statLabel1').textContent = '해당 기간 총 공부시간';
+            document.getElementById('statValue1').textContent = formatMinutes(weekTotal);
+            document.getElementById('statValue1').className = 'chart-stat-value patent';
+            document.getElementById('statLabel2').textContent = '일 평균 공부시간';
+            document.getElementById('statValue2').textContent = formatMinutes(avgMinutes);
+            document.getElementById('statValue2').className = 'chart-stat-value control';
+        }
+
+        // ── 주별 통계: 이번 주 포함 과거 4주, 슬라이더로 이전 달 ──
+        function updateMonthlyChart(data) {
+            showNav(true);
+            const maxOff = getMaxMonthlyOffset(data);
+            if (monthlyOffset > maxOff) monthlyOffset = maxOff;
+
+            const today = new Date();
+            // 이번 주 일요일(주의 마지막) 구하기
+            const dayOfWeek = today.getDay(); // 0=일
+            const thisSunday = new Date(today);
+            if (dayOfWeek !== 0) thisSunday.setDate(today.getDate() + (7 - dayOfWeek));
+
+            // offset 적용: 4주씩 이동
+            const endSunday = new Date(thisSunday);
+            endSunday.setDate(thisSunday.getDate() - monthlyOffset * 28);
+            // 4주 전 월요일
+            const startMonday = new Date(endSunday);
+            startMonday.setDate(endSunday.getDate() - 27);
+
+            const startLabel = `${startMonday.getFullYear()}.${startMonday.getMonth()+1}.${startMonday.getDate()}`;
+            const endDateActual = monthlyOffset === 0 ? today : endSunday;
+            const endLabel = monthlyOffset === 0 ? '오늘' : `${endSunday.getFullYear()}.${endSunday.getMonth()+1}.${endSunday.getDate()}`;
+            document.getElementById('chartTitle').textContent = '📈 주별 공부시간';
+            updateNavUI(monthlyOffset, maxOff, `${startLabel} ~ ${endLabel}`);
+
+            // 4주를 월요일~일요일로 분할
+            const weeks = [];
+            for (let w = 0; w < 4; w++) {
+                const wStart = new Date(startMonday);
+                wStart.setDate(startMonday.getDate() + w * 7);
+                const wEnd = new Date(wStart);
+                wEnd.setDate(wStart.getDate() + 6);
+                weeks.push({ start: new Date(wStart), end: new Date(wEnd) });
+            }
+
+            const labels = [];
+            const patentData = [];
+            const controlData = [];
+
+            weeks.forEach((w, i) => {
+                const sStr = `${w.start.getMonth()+1}/${w.start.getDate()}`;
+                const eStr = `${w.end.getMonth()+1}/${w.end.getDate()}`;
+                labels.push(`${i+1}주차\n(${sStr}~${eStr})`);
+
+                let pm = 0, cm = 0;
+                for (let d = new Date(w.start); d <= w.end; d.setDate(d.getDate() + 1)) {
+                    const dateStr = d.toISOString().split('T')[0];
+                    if (data['patent-law'].daily[dateStr]) {
+                        pm += data['patent-law'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0);
+                    }
+                    if (data['control-engineering'].daily[dateStr]) {
+                        cm += data['control-engineering'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0);
+                    }
                 }
-
-                patentData.push(patentMinutes);
-                controlData.push(controlMinutes);
+                patentData.push(Math.round(pm / 60000));
+                controlData.push(Math.round(cm / 60000));
             });
 
-            // 평균 계산
-            let patentAvg, controlAvg;
-            
-            if (period === 'week') {
-                // 주간: 일별 평균
-                patentAvg = patentData.reduce((a, b) => a + b, 0) / dates.length;
-                controlAvg = controlData.reduce((a, b) => a + b, 0) / dates.length;
-                
-                document.querySelector('#avgPatent').previousElementSibling.textContent = '특허법 평균 (일별)';
-                document.querySelector('#avgControl').previousElementSibling.textContent = '제어공학 평균 (일별)';
-            } else {
-                // 월간: 주별 평균 (30일을 주 단위로 나눔)
-                const weeksCount = Math.ceil(dates.length / 7);
-                let patentWeeklyTotal = 0;
-                let controlWeeklyTotal = 0;
-                
-                for (let i = 0; i < weeksCount; i++) {
-                    const weekStart = i * 7;
-                    const weekEnd = Math.min((i + 1) * 7, dates.length);
-                    
-                    const patentWeekSum = patentData.slice(weekStart, weekEnd).reduce((a, b) => a + b, 0);
-                    const controlWeekSum = controlData.slice(weekStart, weekEnd).reduce((a, b) => a + b, 0);
-                    
-                    patentWeeklyTotal += patentWeekSum;
-                    controlWeeklyTotal += controlWeekSum;
-                }
-                
-                patentAvg = patentWeeklyTotal / weeksCount;
-                controlAvg = controlWeeklyTotal / weeksCount;
-                
-                document.querySelector('#avgPatent').previousElementSibling.textContent = '특허법 평균 (주별)';
-                document.querySelector('#avgControl').previousElementSibling.textContent = '제어공학 평균 (주별)';
-            }
+            const totalPerWeek = patentData.map((p, i) => p + controlData[i]);
+            const avgWeekly = Math.round(totalPerWeek.reduce((a, b) => a + b, 0) / 4);
+            const avgLine = new Array(4).fill(avgWeekly);
 
-            document.getElementById('avgPatent').textContent = formatMinutes(Math.round(patentAvg));
-            document.getElementById('avgControl').textContent = formatMinutes(Math.round(controlAvg));
-
-            // 그래프 업데이트
             studyChart.data.labels = labels;
-            studyChart.data.datasets[0].data = patentData;
-            studyChart.data.datasets[1].data = controlData;
+            studyChart.data.datasets = [
+                { label: '특허법', data: patentData, backgroundColor: 'rgba(99,102,241,0.7)', borderColor: 'rgba(99,102,241,1)', borderWidth: 2, borderRadius: 8, order: 2 },
+                { label: '제어공학', data: controlData, backgroundColor: 'rgba(236,72,153,0.7)', borderColor: 'rgba(236,72,153,1)', borderWidth: 2, borderRadius: 8, order: 2 },
+                { label: '주평균', data: avgLine, type: 'line', borderColor: 'rgba(251,191,36,1)', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6, 4], pointRadius: 0, order: 1 }
+            ];
+            studyChart.config.type = 'bar';
+            studyChart.options = getChartOptions();
             studyChart.update();
+
+            const total = totalPerWeek.reduce((a, b) => a + b, 0);
+            document.getElementById('statLabel1').textContent = '해당 기간 총 공부시간';
+            document.getElementById('statValue1').textContent = formatMinutes(total);
+            document.getElementById('statValue1').className = 'chart-stat-value patent';
+            document.getElementById('statLabel2').textContent = '주 평균 공부시간';
+            document.getElementById('statValue2').textContent = formatMinutes(avgWeekly);
+            document.getElementById('statValue2').className = 'chart-stat-value control';
         }
 
-        // 날짜 범위 생성
-        function getDateRange(period) {
-            const dates = [];
-            const today = new Date();
-            const days = period === 'week' ? 7 : 30;
-
-            for (let i = days - 1; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                dates.push(date.toISOString().split('T')[0]);
-            }
-
-            return dates;
+        function setEmptyChart(msg) {
+            showNav(false);
+            studyChart.data.labels = [msg];
+            studyChart.data.datasets = [{ label: '', data: [0], backgroundColor: 'rgba(0,0,0,0.05)' }];
+            studyChart.update();
+            document.getElementById('statLabel1').textContent = '-';
+            document.getElementById('statValue1').textContent = '-';
+            document.getElementById('statLabel2').textContent = '-';
+            document.getElementById('statValue2').textContent = '-';
         }
 
-        // 분을 "X시간 Y분" 형식으로 변환
         function formatMinutes(minutes) {
             const hours = Math.floor(minutes / 60);
             const mins = minutes % 60;
-            if (hours === 0) {
-                return `${mins}분`;
-            }
+            if (hours === 0) return `${mins}분`;
             return `${hours}시간 ${mins}분`;
         }
 
@@ -1376,6 +2874,8 @@
                 document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 currentChartPeriod = tab.dataset.period;
+                if (currentChartPeriod === 'weekly') weeklyOffset = 0;
+                if (currentChartPeriod === 'monthly') monthlyOffset = 0;
                 updateChart(currentChartPeriod);
             });
         });
