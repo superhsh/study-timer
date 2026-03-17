@@ -2692,6 +2692,7 @@
             const labels = [];
             const patentData = [];
             const controlData = [];
+            let totalRawMs = 0;
 
             for (let i = 0; i < 7; i++) {
                 const d = new Date(startDate);
@@ -2699,19 +2700,20 @@
                 const dateStr = d.toISOString().split('T')[0];
                 labels.push(`${d.getMonth()+1}/${d.getDate()}(${dayNames[d.getDay()]})`);
 
-                let pm = 0, cm = 0;
+                let pmMs = 0, cmMs = 0;
                 if (data['patent-law'].daily[dateStr]) {
-                    pm = Math.round(data['patent-law'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0) / 60000);
+                    pmMs = data['patent-law'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0);
                 }
                 if (data['control-engineering'].daily[dateStr]) {
-                    cm = Math.round(data['control-engineering'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0) / 60000);
+                    cmMs = data['control-engineering'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0);
                 }
-                patentData.push(pm);
-                controlData.push(cm);
+                totalRawMs += pmMs + cmMs;
+                patentData.push(Math.round(pmMs / 60000));
+                controlData.push(Math.round(cmMs / 60000));
             }
 
-            const totalPerDay = patentData.map((p, i) => p + controlData[i]);
-            const avgMinutes = Math.round(totalPerDay.reduce((a, b) => a + b, 0) / 7);
+            const weekTotalMinutes = Math.round(totalRawMs / 60000);
+            const avgMinutes = Math.round(weekTotalMinutes / 7);
             const avgLine = new Array(7).fill(avgMinutes);
 
             studyChart.data.labels = labels;
@@ -2724,9 +2726,8 @@
             studyChart.options = getChartOptions();
             studyChart.update();
 
-            const weekTotal = totalPerDay.reduce((a, b) => a + b, 0);
             document.getElementById('statLabel1').textContent = '해당 기간 총 공부시간';
-            document.getElementById('statValue1').textContent = formatMinutes(weekTotal);
+            document.getElementById('statValue1').textContent = formatMinutes(weekTotalMinutes);
             document.getElementById('statValue1').className = 'chart-stat-value patent';
             document.getElementById('statLabel2').textContent = '일 평균 공부시간';
             document.getElementById('statValue2').textContent = formatMinutes(avgMinutes);
@@ -2766,6 +2767,7 @@
             const labels = [];
             const patentData = [];
             const controlData = [];
+            let totalRawMs = 0;
 
             weeks.forEach((w, i) => {
                 const sStr = `${w.start.getMonth()+1}/${w.start.getDate()}`;
@@ -2782,12 +2784,13 @@
                         cm += data['control-engineering'].daily[dateStr].reduce((s, ss) => s + ss.duration, 0);
                     }
                 }
+                totalRawMs += pm + cm;
                 patentData.push(Math.round(pm / 60000));
                 controlData.push(Math.round(cm / 60000));
             });
 
-            const totalPerWeek = patentData.map((p, i) => p + controlData[i]);
-            const avgWeekly = Math.round(totalPerWeek.reduce((a, b) => a + b, 0) / 4);
+            const totalMinutes = Math.round(totalRawMs / 60000);
+            const avgWeekly = Math.round(totalMinutes / 4);
             const avgLine = new Array(4).fill(avgWeekly);
 
             studyChart.data.labels = labels;
@@ -2800,9 +2803,8 @@
             studyChart.options = getChartOptions();
             studyChart.update();
 
-            const total = totalPerWeek.reduce((a, b) => a + b, 0);
             document.getElementById('statLabel1').textContent = '해당 기간 총 공부시간';
-            document.getElementById('statValue1').textContent = formatMinutes(total);
+            document.getElementById('statValue1').textContent = formatMinutes(totalMinutes);
             document.getElementById('statValue1').className = 'chart-stat-value patent';
             document.getElementById('statLabel2').textContent = '주 평균 공부시간';
             document.getElementById('statValue2').textContent = formatMinutes(avgWeekly);
